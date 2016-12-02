@@ -1,3 +1,5 @@
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+
 /**
  *
  * WAVLTree
@@ -8,8 +10,22 @@
  */
 
 
-
 public class WAVLTree {
+	
+	private WAVLNode root;
+	private int size; //update every delete\insert op
+
+/**
+ * WAVL constructor
+ * create a new empty tree
+ * 
+ */
+public WAVLTree(){
+	this.root=null;
+	this.size=0;
+}
+	
+	
 
   /**
    * public boolean empty()
@@ -17,8 +33,8 @@ public class WAVLTree {
    * returns true if and only if the tree is empty
    *
    */
-  public boolean empty() {
-    return false; // to be replaced by student code
+  public boolean empty() { //check with Omri if I can use this
+	  return 0==size;
   }
 
  /**
@@ -27,9 +43,27 @@ public class WAVLTree {
    * returns the info of an item with key k if it exists in the tree
    * otherwise, returns null
    */
+  public String rec_search(WAVLNode node, int k){
+	  if (node == null){
+			return null;
+		}
+		else if (node.key == k) {
+			return node.info;
+		}
+		else if (k > node.key) {
+			return rec_search(node.right, k);
+		}
+		else if (k < node.key) {
+			return rec_search(node.left, k);
+		}
+			
+		return null;
+  }
+  
+  
   public String search(int k)
   {
-	return "42";  // to be replaced by student code
+	  return rec_search(this.root, k);
   }
 
   /**
@@ -60,14 +94,28 @@ public class WAVLTree {
    /**
     * public String min()
     *
-    * Returns the i׳�fo of the item with the smallest key in the tree,
+    * Returns the i׳³ן¿½fo of the item with the smallest key in the tree,
     * or null if the tree is empty
     */
+   
+   public String rec_min(WAVLNode node){
+	   if (node == null) {
+			return null;
+		}
+	   else if (node.left == null) {
+		   return node.parent.info;
+	   }
+	   else {
+		   return rec_min(node.left);
+	   }
+   }
+   
    public String min()
    {
-	   return "42"; // to be replaced by student code
+	   return rec_min(this.root); // to be replaced by student code
    }
 
+   
    /**
     * public String max()
     *
@@ -76,8 +124,20 @@ public class WAVLTree {
     */
    public String max()
    {
-	   return "42"; // to be replaced by student code
+	   if (this.root == null){
+		   return null;
+	   }
+	   return rec_max(this.root);
    }
+   public String rec_max(WAVLNode cur_node){
+	   if (cur_node.right == null){
+		   return cur_node.info;
+	   }
+	   return rec_max(cur_node.right);
+		   
+	   
+   }
+
 
   /**
    * public int[] keysToArray()
@@ -85,9 +145,26 @@ public class WAVLTree {
    * Returns a sorted array which contains all keys in the tree,
    * or an empty array if the tree is empty.
    */
+   //not finished yet...
+   public int[] rec_keysToArray(WAVLNode node){
+	   if (node == null) {
+			return new int[0];
+		}
+	   else if (node.left == null) {
+		   return new int[]{node.key};
+	   }
+	   else {
+		   return rec_keysToArray(node.left);
+	   }
+   }
+   
   public int[] keysToArray()
   {
         int[] arr = new int[42]; // to be replaced by student code
+        
+        return rec_keysToArray(this.root);
+        
+        
         return arr;              // to be replaced by student code
   }
 
@@ -125,9 +202,91 @@ public class WAVLTree {
    * another file.
    * This is an example which can be deleted if no such classes are necessary.
    */
-  public class WAVLNode{
+  public static class WAVLNode{
+		private WAVLNode left;
+		private WAVLNode right;
+		private WAVLNode parent;
+		private int key;
+		private String info;
+		private int rank_diff;
+		
+		public WAVLNode(WAVLNode left,WAVLNode right,WAVLNode parent,int key,String info) {
+			this.left = left;
+			this.right = right;
+			this.parent = parent;
+			this.key = key;
+			this.info = info;
+			this.rank_diff = 0;
+		}
+
+		public WAVLNode getLeft() {
+			return left;
+		}
+
+		public void setLeft(WAVLNode left) {
+			this.left = left;
+		}
+
+		public WAVLNode getRight() {
+			return right;
+		}
+
+		public void setRight(WAVLNode right) {
+			this.right = right;
+		}
+
+		public WAVLNode getParent() {
+			return parent;
+		}
+
+		public void setParent(WAVLNode parent) {
+			this.parent = parent;
+		}
+
+		public int getKey() {
+			return key;
+		}
+
+		public void setKey(int key) {
+			this.key = key;
+		}
+
+		public String getInfo() {
+			return info;
+		}
+
+		public void setInfo(String info) {
+			this.info = info;
+		}
+
+		public int getRank_diff() {
+			return rank_diff;
+		}
+
+		public void setRank_diff(int rank_diff) {
+			this.rank_diff = rank_diff;
+		}
+		
+  }
+  
+  //for tests//
+  public static void main(String[] args){
+	  //System.out.println(Arrays.toString(new int[]{3}));
+	  //System.out.println("3");
+	  
+	  //Function tests//
+	  WAVLTree bin_tree = new WAVLTree();
+	  bin_tree.root = new WAVLNode(null, null, null, 3, "Haim");
+	  bin_tree.root.left = new WAVLNode(null, null, bin_tree.root, 2, "maya");
+	  bin_tree.root.right = new WAVLNode(null, null, bin_tree.root, 6, "ron");
+	  System.out.println(bin_tree.size);
+	  System.out.println(bin_tree.size());
+	  System.out.println(bin_tree.empty());
+	  System.out.println(bin_tree.min());
+	  System.out.println(bin_tree.max());
 
   }
+  
 
 }
   
