@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 /**
@@ -145,28 +149,34 @@ public WAVLTree(){
    * Returns a sorted array which contains all keys in the tree,
    * or an empty array if the tree is empty.
    */
-   //not finished yet...
-   public int[] rec_keysToArray(WAVLNode node){
-	   if (node == null) {
-			return new int[0];
-		}
-	   else if (node.left == null) {
-		   return new int[]{node.key};
-	   }
-	   else {
-		   return rec_keysToArray(node.left);
-	   }
+   //it's working but i'm not sure it's a good idea to make a public list for the list
+   List<Integer> list = new ArrayList<>();
+   
+   public int[] keysToArray()
+   {
+	   
+	   	 list.clear();
+         rec_keysToArray(this.root);
+         
+         int[] ret = new int[list.size()];
+         for (int i=0; i < ret.length; i++)
+         {
+             ret[i] = list.get(i).intValue();
+         }
+         return ret;        
+         
    }
    
-  public int[] keysToArray()
-  {
-        int[] arr = new int[42]; // to be replaced by student code
-        
-        return rec_keysToArray(this.root);
-        
-        
-        return arr;              // to be replaced by student code
-  }
+   public void rec_keysToArray(WAVLNode node){
+	   if (node == null) {
+			return;
+		}
+	   rec_keysToArray(node.left);
+	   list.add(node.key);
+	   rec_keysToArray(node.right);
+	return;
+   }
+   
 
   /**
    * public String[] infoToArray()
@@ -282,8 +292,12 @@ public WAVLTree(){
 	  System.out.println(bin_tree.size);
 	  System.out.println(bin_tree.size());
 	  System.out.println(bin_tree.empty());
-	  System.out.println(bin_tree.min());
+	  //System.out.println(bin_tree.min());
 	  System.out.println(bin_tree.max());
+	  //System.out.println(bin_tree.search(6));
+	  System.out.println(Arrays.toString(bin_tree.keysToArray()));
+	  
+	  
 
   }
   
