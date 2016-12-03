@@ -194,6 +194,10 @@ public WAVLTree(){
 	return;
    }
    
+   private in-Order-info(String[] arr, WAVLNode root){
+	   if 
+   }
+   
 
   /**
    * public String[] infoToArray()
@@ -204,7 +208,7 @@ public WAVLTree(){
    */
   public String[] infoToArray()
   {
-        String[] arr = new String[42]; // to be replaced by student code
+        String[] arr = new String[this.size]; // to be replaced by student code
         return arr;                    // to be replaced by student code
   }
 
