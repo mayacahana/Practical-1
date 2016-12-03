@@ -24,7 +24,7 @@ public class WAVLTree {
 	private WAVLNode max;
 	private int size; //update every delete\insert op
 	
-	public WAVLNode getRoot() {
+public WAVLNode getRoot() {
 		return root;
 	}
 
