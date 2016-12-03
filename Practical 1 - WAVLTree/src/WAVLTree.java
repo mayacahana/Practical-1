@@ -128,7 +128,7 @@ public WAVLTree(){
     */
    public String max()
    {
-	   if (this.root == null){
+	   if (empty()){
 		   return null;
 	   }
 	   return rec_max(this.root);
