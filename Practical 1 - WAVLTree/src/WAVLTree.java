@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
+//import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 import check.WAVLTree.WAVLNode;
 
@@ -20,8 +20,15 @@ public class WAVLTree {
 	
 	private WAVLNode root;
 	private static WAVLNode EXTLeaf;
+<<<<<<< HEAD
 	private WAVLNode min;
 	private WAVLNode max;
+=======
+	private int min_key;
+	private int max_key;
+	private String min;
+	private String max;
+>>>>>>> branch 'master' of https://github.com/tront1992/Practical-1.git
 	private int size; //update every delete\insert op
 	public WAVLNode getRoot() {
 		return root;
@@ -49,6 +56,8 @@ public int getSize() {
  */
 public WAVLTree(){
 	this.root=null;
+	this.min=null;
+	this.min=null;
 	this.size=0;
 	this.min=null;
 	this.max=null;
@@ -105,6 +114,24 @@ public WAVLTree(){
    * returns -1 if an item with key k already exists in the tree.
    */
    public int insert(int k, String i) {
+	   
+	   if (k<=min_key){
+		   min_key = k;
+	   }
+	   else if (k>=max_key){
+		   max_key = k;
+	   }
+	   
+	   if (root==null){
+		   root = new WAVLNode(k, i);
+	   }
+	   
+	   //Case A// not finished yet
+	   else if (root.left == null & root.right == null){
+		   root.left = new WAVLNode(k, i);
+		   root.left.rank_diff = 1;
+	   }
+	   
 	  return 42;	// to be replaced by student code
    }
 
