@@ -18,8 +18,8 @@ public class WAVLTree {
 	
 	private WAVLNode root;
 	private static WAVLNode EXTLeaf;
-	private String min;
-	private String max;
+	private WAVLNode min;
+	private WAVLNode max;
 	private int size; //update every delete\insert op
 
 /**
@@ -30,6 +30,9 @@ public class WAVLTree {
 public WAVLTree(){
 	this.root=null;
 	this.size=0;
+	this.min=null;
+	this.max=null;
+
 }
 	
 	
@@ -119,8 +122,8 @@ public WAVLTree(){
    
    public String min()
    {
-	   return min;
-	   //return rec_min(this.root); // to be replaced by student code
+	   return this.min.info;
+	   
    }
 
    
@@ -147,15 +150,7 @@ public WAVLTree(){
    
    public String max()
    {
-<<<<<<< HEAD
-	   if (empty()){
-		   return null;
-	   }
-	   return rec_max(this.root);
-=======
-	   return max;
-	   //return rec_max(this.root);
->>>>>>> branch 'master' of https://github.com/tront1992/Practical-1.git
+	   return this.max.info;
    }
    
 
@@ -194,8 +189,12 @@ public WAVLTree(){
 	return;
    }
    
-   private in-Order-info(String[] arr, WAVLNode root){
-	   if 
+   private in_Order_info(int key, String[] arr, WAVLNode root){
+	   if (root==null)
+		   	return key;
+	   key = in_Order_info(key, arr, root.getLeft());
+	   arr[key]= root.getInfo();
+	   
    }
    
 
