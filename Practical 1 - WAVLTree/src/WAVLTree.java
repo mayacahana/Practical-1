@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 
+import check.WAVLTree.WAVLNode;
+
 /**
  *
  * WAVLTree
@@ -21,6 +23,24 @@ public class WAVLTree {
 	private WAVLNode min;
 	private WAVLNode max;
 	private int size; //update every delete\insert op
+	public WAVLNode getRoot() {
+		return root;
+	}
+
+
+public WAVLNode getMin() {
+		return min;
+	}
+
+public WAVLNode getMax() {
+		return max;
+	}
+
+public int getSize() {
+		return size;
+	}
+
+
 
 /**
  * WAVL constructor
@@ -189,12 +209,15 @@ public WAVLTree(){
 	return;
    }
    
-   private in_Order_info(int key, String[] arr, WAVLNode root){
-	   if (root==null)
-		   	return key;
-	   key = in_Order_info(key, arr, root.getLeft());
-	   arr[key]= root.getInfo();
-	   
+   private int in_Order_info(int pos, String[] arr, WAVLNode node){
+	   if (root!=null){
+		   pos = in_Order_info(pos,arr,node.getLeft());
+		   arr[pos]=node.getInfo();
+		   pos++;
+		   pos = in_Order_info(pos,arr,node.getRight());
+				
+	   }
+	   return pos;
    }
    
 
@@ -207,8 +230,9 @@ public WAVLTree(){
    */
   public String[] infoToArray()
   {
-        String[] arr = new String[this.size]; // to be replaced by student code
-        return arr;                    // to be replaced by student code
+	  String[] arr = new String[this.size];
+      in_Order_info(0,arr,this.root);
+      return arr;                   
   }
 
    /**
