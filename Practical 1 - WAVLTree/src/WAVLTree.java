@@ -2,9 +2,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
+
 //import com.sun.org.apache.bcel.internal.generic.RETURN;
 
-import check.WAVLTree.WAVLNode;
 
 /**
  *
@@ -19,7 +20,7 @@ import check.WAVLTree.WAVLNode;
 public class WAVLTree {
 	
 	private WAVLNode root;
-	private static WAVLNode EXTLeaf;
+	//private final WAVLNode EXTLeaf;
 	private WAVLNode min;
 	private WAVLNode max;
 	private int size; //update every delete\insert op
@@ -97,6 +98,19 @@ public WAVLTree(){
   {
 	  return rec_search(this.root, k);
   }
+  
+  public void Rotate_Left(WAVLNode node)
+  {
+	  
+	  WAVLNode b = node.left;
+	  node.left = node.parent;
+	  node.parent = node;
+	  node.left.right = b;
+	  b.parent = node.left;
+
+	  return;
+  }
+  
 
   /**
    * public int insert(int k, String i)
@@ -108,11 +122,11 @@ public WAVLTree(){
    */
    public int insert(int k, String i) {
 	   
-	   if (k<=min_key){
-		   min_key = k;
+	   if (k<=min.key){
+		   min.key = k;
 	   }
-	   else if (k>=max_key){
-		   max_key = k;
+	   else if (k>=min.key){
+		   min.key = k;
 	   }
 	   
 	   if (root==null){
@@ -220,7 +234,7 @@ public WAVLTree(){
    }
    
    public void rec_keysToArray(WAVLNode node){
-	   if (node == null) {
+	   if (node == null || node.key==Integer.MAX_VALUE) {
 			return;
 		}
 	   rec_keysToArray(node.left);
@@ -285,11 +299,20 @@ public WAVLTree(){
 		private int rank_diff;
 		
 		public WAVLNode(int key,String info) {
-			this.left = EXTLeaf;
-			this.right = EXTLeaf;
+			this.left = new WAVLNode(null);
+			this.right = new WAVLNode(null);
 			this.parent = null;
 			this.key = key;
 			this.info = info;
+			this.rank_diff = 0;
+		}
+		
+		public WAVLNode(WAVLNode parent) {
+			this.left = null;
+			this.right = null;
+			this.parent = parent;
+			this.key = Integer.MAX_VALUE;
+			this.info = null;
 			this.rank_diff = 0;
 		}
 
@@ -346,7 +369,7 @@ public WAVLTree(){
   //for tests//
   public static void main(String[] args){
 	  //System.out.println(Arrays.toString(new int[]{3}));
-	  //System.out.println("3");
+	  System.out.println("3");
 	  
 	  //Function tests//
 	  WAVLTree bin_tree = new WAVLTree();
@@ -356,10 +379,11 @@ public WAVLTree(){
 	  System.out.println(bin_tree.size);
 	  System.out.println(bin_tree.size());
 	  System.out.println(bin_tree.empty());
-	  System.out.println(bin_tree.min());
-	  System.out.println(bin_tree.max());
-	  //System.out.println(bin_tree.search(6));
+	  //System.out.println(bin_tree.min());
+	  //System.out.println(bin_tree.max());
+	  System.out.println(bin_tree.search(6));
 	  System.out.println(Arrays.toString(bin_tree.keysToArray()));
+	  System.out.println(Arrays.toString(bin_tree.infoToArray()));
 	  
 	  
 
