@@ -20,16 +20,10 @@ public class WAVLTree {
 	
 	private WAVLNode root;
 	private static WAVLNode EXTLeaf;
-<<<<<<< HEAD
 	private WAVLNode min;
 	private WAVLNode max;
-=======
-	private int min_key;
-	private int max_key;
-	private String min;
-	private String max;
->>>>>>> branch 'master' of https://github.com/tront1992/Practical-1.git
 	private int size; //update every delete\insert op
+	
 	public WAVLNode getRoot() {
 		return root;
 	}
@@ -59,8 +53,7 @@ public WAVLTree(){
 	this.min=null;
 	this.min=null;
 	this.size=0;
-	this.min=null;
-	this.max=null;
+	
 
 }
 	
