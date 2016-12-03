@@ -17,6 +17,9 @@ import com.sun.org.apache.bcel.internal.generic.RETURN;
 public class WAVLTree {
 	
 	private WAVLNode root;
+	private static WAVLNode EXTLeaf;
+	private String min;
+	private String max;
 	private int size; //update every delete\insert op
 
 /**
@@ -102,21 +105,22 @@ public WAVLTree(){
     * or null if the tree is empty
     */
    
-   public String rec_min(WAVLNode node){
-	   if (node == null) {
-			return null;
-		}
-	   else if (node.left == null) {
-		   return node.parent.info;
-	   }
-	   else {
-		   return rec_min(node.left);
-	   }
-   }
+//   public String rec_min(WAVLNode node){
+//	   if (node == null) {
+//			return null;
+//		}
+//	   else if (node.left == null) {
+//		   return node.info;
+//	   }
+//	   else {
+//		   return rec_min(node.left);
+//	   }
+//   }
    
    public String min()
    {
-	   return rec_min(this.root); // to be replaced by student code
+	   return min;
+	   //return rec_min(this.root); // to be replaced by student code
    }
 
    
@@ -126,21 +130,34 @@ public WAVLTree(){
     * Returns the info of the item with the largest key in the tree,
     * or null if the tree is empty
     */
+   
+//   public String rec_max(WAVLNode node){
+//	   if (node == null){
+//		   return null;
+//	   }
+//	   else if (node.right == null) {
+//		   return node.info;
+//	   }
+//	   else {
+//		   return rec_max(node.right);
+//	   }
+//		   
+//	   
+//   }
+   
    public String max()
    {
+<<<<<<< HEAD
 	   if (empty()){
 		   return null;
 	   }
 	   return rec_max(this.root);
+=======
+	   return max;
+	   //return rec_max(this.root);
+>>>>>>> branch 'master' of https://github.com/tront1992/Practical-1.git
    }
-   public String rec_max(WAVLNode cur_node){
-	   if (cur_node.right == null){
-		   return cur_node.info;
-	   }
-	   return rec_max(cur_node.right);
-		   
-	   
-   }
+   
 
 
   /**
@@ -220,10 +237,10 @@ public WAVLTree(){
 		private String info;
 		private int rank_diff;
 		
-		public WAVLNode(WAVLNode left,WAVLNode right,WAVLNode parent,int key,String info) {
-			this.left = left;
-			this.right = right;
-			this.parent = parent;
+		public WAVLNode(int key,String info) {
+			this.left = EXTLeaf;
+			this.right = EXTLeaf;
+			this.parent = null;
 			this.key = key;
 			this.info = info;
 			this.rank_diff = 0;
@@ -286,13 +303,13 @@ public WAVLTree(){
 	  
 	  //Function tests//
 	  WAVLTree bin_tree = new WAVLTree();
-	  bin_tree.root = new WAVLNode(null, null, null, 3, "Haim");
-	  bin_tree.root.left = new WAVLNode(null, null, bin_tree.root, 2, "maya");
-	  bin_tree.root.right = new WAVLNode(null, null, bin_tree.root, 6, "ron");
+	  bin_tree.root = new WAVLNode(3, "Haim");
+	  bin_tree.root.left = new WAVLNode(2, "maya");
+	  bin_tree.root.right = new WAVLNode(6, "ron");
 	  System.out.println(bin_tree.size);
 	  System.out.println(bin_tree.size());
 	  System.out.println(bin_tree.empty());
-	  //System.out.println(bin_tree.min());
+	  System.out.println(bin_tree.min());
 	  System.out.println(bin_tree.max());
 	  //System.out.println(bin_tree.search(6));
 	  System.out.println(Arrays.toString(bin_tree.keysToArray()));
