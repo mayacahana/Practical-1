@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
+import WAVLTree.WAVLNode;
+
 //import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 
@@ -244,12 +246,11 @@ public WAVLTree(){
    }
    
    private int in_Order_info(int pos, String[] arr, WAVLNode node){
-	   if (root!=null){
+	   if (node!=null){
 		   pos = in_Order_info(pos,arr,node.getLeft());
 		   arr[pos]=node.getInfo();
 		   pos++;
-		   pos = in_Order_info(pos,arr,node.getRight());
-				
+		   pos = in_Order_info(pos,arr,node.getRight());	
 	   }
 	   return pos;
    }
