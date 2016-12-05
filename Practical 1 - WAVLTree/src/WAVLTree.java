@@ -219,13 +219,17 @@ public WAVLTree(){
    }
    
    private int in_Order_info(int pos, String[] arr, WAVLNode node){
-	   if (node!=null){
-		   pos = in_Order_info(pos,arr,node.getLeft());
-		   arr[pos]=node.getInfo();
-		   pos++;
-		   pos = in_Order_info(pos,arr,node.getRight());	
+	   if (!node.isExternalLeaf() && !node.isInternalNode()){
+		   
+		   int i = in_Order_info(pos,arr,node.getLeft());
+		   arr[i]=node.getInfo();
+		   return in_Order_info(i+1,arr,node.getRight());
 	   }
-	   return pos;
+	   if (node.isExternalLeaf()){
+		   return pos;
+	   }
+	   nodes[pos]=node.info;
+	   return pos+1;
    }
    
 
@@ -294,7 +298,7 @@ public WAVLTree(){
 			this.left = null;
 			this.right = null;
 			this.parent = parent;
-			this.key = Integer.MAX_VALUE;
+			this.key = 0;
 			this.info = null;
 			this.rank = -1;
 		}
