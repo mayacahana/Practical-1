@@ -271,23 +271,32 @@ public WAVLTree(){
 		private int key;
 		private String info;
 		private int rank;
+		/**
+		 * Create a new node as an INTERNAL Leaf
+		 * @param key
+		 * @param info
+		 */
 		
-		public WAVLNode(int key,String info) {
-			this.left = new WAVLNode(null);
-			this.right = new WAVLNode(null);
-			this.parent = null;
+		public WAVLNode(int key,String info, WAVLNode parent) {
+			this.left = new WAVLNode(this);
+			this.right = new WAVLNode(this);
+			this.parent = parent;
 			this.key = key;
 			this.info = info;
 			this.rank=0;
 		}
-		
+		/**
+		 * Create a new EXTERNAL leaf
+		 * with a -1 rank
+		 * @param parent
+		 */
 		public WAVLNode(WAVLNode parent) {
 			this.left = null;
 			this.right = null;
 			this.parent = parent;
 			this.key = Integer.MAX_VALUE;
 			this.info = null;
-			this.rank = 0;
+			this.rank = -1;
 		}
 
 		public WAVLNode getLeft() {
