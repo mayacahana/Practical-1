@@ -30,16 +30,12 @@ public class WAVLTree {
 public WAVLNode getRoot() {
 		return root;
 	}
-
-
 public WAVLNode getMin() {
 		return min;
 	}
-
 public WAVLNode getMax() {
 		return max;
 	}
-
 public int getSize() {
 		return size;
 	}
@@ -343,6 +339,12 @@ public WAVLTree(){
 		}
 		public int getRankDiff(){
 			return (this.rank-this.parent.rank);
+		}
+		public void rankPromote(){
+			this.rank = this.rank+1;
+		}
+		public void rankDemote(){
+			this.rank = this.rank-1;
 		}
 		
   }
