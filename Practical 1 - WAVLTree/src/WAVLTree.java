@@ -1,10 +1,10 @@
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
-import WAVLTree.WAVLNode;
 
 //import com.sun.org.apache.bcel.internal.generic.RETURN;
 
@@ -113,6 +113,14 @@ public WAVLTree(){
 	  return;
   }
   
+  public void Rotate_Right(WAVLNode node){
+	  WAVLNode prevParent = node.getParent();
+	  WAVL prevRight = node.getRight();
+	  
+	  if ()
+	  
+  }
+  
 
   /**
    * public int insert(int k, String i)
@@ -127,8 +135,8 @@ public WAVLTree(){
 	   if (k<=min.key){
 		   min.key = k;
 	   }
-	   else if (k>=min.key){
-		   min.key = k;
+	   else if (k>=max.key){
+		   max.key = k;
 	   }
 	   
 	   if (root==null){
@@ -164,53 +172,22 @@ public WAVLTree(){
     * or null if the tree is empty
     */
    
-//   public String rec_min(WAVLNode node){
-//	   if (node == null) {
-//			return null;
-//		}
-//	   else if (node.left == null) {
-//		   return node.info;
-//	   }
-//	   else {
-//		   return rec_min(node.left);
-//	   }
-//   }
-   
+
    public String min()
    {
 	   return this.min.info;
 	   
    }
-
-   
    /**
     * public String max()
     *
     * Returns the info of the item with the largest key in the tree,
     * or null if the tree is empty
     */
-   
-//   public String rec_max(WAVLNode node){
-//	   if (node == null){
-//		   return null;
-//	   }
-//	   else if (node.right == null) {
-//		   return node.info;
-//	   }
-//	   else {
-//		   return rec_max(node.right);
-//	   }
-//		   
-//	   
-//   }
-   
    public String max()
    {
 	   return this.max.info;
    }
-   
-
-
   /**
    * public int[] keysToArray()
    *
@@ -297,7 +274,7 @@ public WAVLTree(){
 		private WAVLNode parent;
 		private int key;
 		private String info;
-		private int rank_diff;
+		private int rank;
 		
 		public WAVLNode(int key,String info) {
 			this.left = new WAVLNode(null);
@@ -305,7 +282,7 @@ public WAVLTree(){
 			this.parent = null;
 			this.key = key;
 			this.info = info;
-			this.rank_diff = 0;
+			this.rank=0;
 		}
 		
 		public WAVLNode(WAVLNode parent) {
@@ -314,7 +291,7 @@ public WAVLTree(){
 			this.parent = parent;
 			this.key = Integer.MAX_VALUE;
 			this.info = null;
-			this.rank_diff = 0;
+			this.rank = 0;
 		}
 
 		public WAVLNode getLeft() {
@@ -357,12 +334,15 @@ public WAVLTree(){
 			this.info = info;
 		}
 
-		public int getRank_diff() {
-			return rank_diff;
+		public int getRank() {
+			return this.rank;
 		}
 
-		public void setRank_diff(int rank_diff) {
-			this.rank_diff = rank_diff;
+		public void setRank(int rank) {
+			this.rank = rank;
+		}
+		public int getRankDiff(){
+			return (this.rank-this.parent.rank);
 		}
 		
   }
