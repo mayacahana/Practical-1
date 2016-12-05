@@ -228,7 +228,7 @@ public WAVLTree(){
 	   if (node.isExternalLeaf()){
 		   return pos;
 	   }
-	   nodes[pos]=node.info;
+	   arr[pos]=node.info;
 	   return pos+1;
    }
    
@@ -257,7 +257,7 @@ public WAVLTree(){
     */
    public int size()
    {
-	   return 42; // to be replaced by student code
+	   return this.getSize(); 
    }
 
   /**
@@ -279,6 +279,7 @@ public WAVLTree(){
 		 * Create a new node as an INTERNAL Leaf
 		 * @param key
 		 * @param info
+		 * @param parent
 		 */
 		
 		public WAVLNode(int key,String info, WAVLNode parent) {
