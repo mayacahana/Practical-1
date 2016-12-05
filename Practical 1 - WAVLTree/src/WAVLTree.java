@@ -349,6 +349,14 @@ public WAVLTree(){
 		public int getRankDiff(){
 			return (this.rank-this.parent.rank);
 		}
+		public boolean isExternalLeaf(){
+			if (this.rank == -1)
+				return true;
+			return false;
+		}
+		public boolean isInternalNode(){
+			return(!this.right.isExternalLeaf() && !this.left.isExternalLeaf());
+		}
 		public void rankPromote(){
 			this.rank = this.rank+1;
 		}
