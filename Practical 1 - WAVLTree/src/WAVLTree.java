@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
-
-
 
 
 /**
@@ -36,10 +33,10 @@ public WAVLNode getMin() {
 public WAVLNode getMax() {
 		return max;
 	}
-public WAVLNode setMax(WAVLNode max) {
+public void setMax(WAVLNode max) {
 	this.max=max;
 	}
-public WAVLNode setMin(WAVLNode min) {
+public void setMin(WAVLNode min) {
 	this.min=min;
 	}
 public int getSize() {
@@ -128,13 +125,7 @@ public WAVLTree(){
    */
    public int insert(int k, String i) {
 	    	   
-	   //Case A// not finished yet
-	   else if (root.left == null & root.right == null){
-		   root.left = new WAVLNode(k, i);
-		   root.left.rank_diff = 1;
-	   }
-	   
-	  return 42;	// to be replaced by student code
+	  return 42;
    }
 
   /**
@@ -380,9 +371,7 @@ public WAVLTree(){
 	  
 	  //Function tests//
 	  WAVLTree bin_tree = new WAVLTree();
-	  bin_tree.root = new WAVLNode(3, "Haim");
-	  bin_tree.root.left = new WAVLNode(2, "maya");
-	  bin_tree.root.right = new WAVLNode(6, "ron");
+	  
 	  System.out.println(bin_tree.size);
 	  System.out.println(bin_tree.size());
 	  System.out.println(bin_tree.empty());
