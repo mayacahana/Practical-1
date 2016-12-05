@@ -1,4 +1,5 @@
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -6,7 +7,6 @@ import java.util.List;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
 
-//import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 
 /**
@@ -35,6 +35,12 @@ public WAVLNode getMin() {
 	}
 public WAVLNode getMax() {
 		return max;
+	}
+public WAVLNode setMax(WAVLNode max) {
+	this.max=max;
+	}
+public WAVLNode setMin(WAVLNode min) {
+	this.min=min;
 	}
 public int getSize() {
 		return size;
@@ -109,13 +115,7 @@ public WAVLTree(){
 	  return;
   }
   
-  public void Rotate_Right(WAVLNode node){
-	  WAVLNode prevParent = node.getParent();
-	  WAVL prevRight = node.getRight();
-	  
-	  if ()
-	  
-  }
+  
   
 
   /**
@@ -127,18 +127,7 @@ public WAVLTree(){
    * returns -1 if an item with key k already exists in the tree.
    */
    public int insert(int k, String i) {
-	   
-	   if (k<=min.key){
-		   min.key = k;
-	   }
-	   else if (k>=max.key){
-		   max.key = k;
-	   }
-	   
-	   if (root==null){
-		   root = new WAVLNode(k, i);
-	   }
-	   
+	    	   
 	   //Case A// not finished yet
 	   else if (root.left == null & root.right == null){
 		   root.left = new WAVLNode(k, i);
@@ -164,7 +153,7 @@ public WAVLTree(){
    /**
     * public String min()
     *
-    * Returns the i׳³ן¿½fo of the item with the smallest key in the tree,
+    * Returns the of the item with the smallest key in the tree,
     * or null if the tree is empty
     */
    
@@ -368,6 +357,19 @@ public WAVLTree(){
 		public void rankDemote(){
 			this.rank = this.rank-1;
 		}
+		
+		public void Rotate_Right(){
+			  WAVLNode prevParent = this.getParent();
+			  WAVLNode prevRight = this.getRight();
+			  
+			  this.parent = prevParent.getParent();
+			  this.right = prevParent;
+			  prevParent.left = prevRight;
+			  prevParent.parent = this;
+			  
+			  
+			  
+		  }
 		
   }
   
