@@ -112,8 +112,45 @@ public WAVLTree(){
 	  return;
   }
   
-  
-  
+   private WAVLNode findPlace(int k,String i, WAVLNode node){
+	   if (node.isExternalLeaf()){
+		   return new WAVLNode(k,i,node.getParent());
+	   }
+	   else if (node.key==k)
+		   return node;
+	   else if (k<node.key){
+		   node.left = findPlace(k,i,node.left);
+	   }
+	   else if (k>node.key){
+		   node.right = findPlace(k,i,node.right);
+	   }
+	   return node;
+	   
+   }
+  private void treeBalance(WAVLNode newNode){
+	  //detect the case!!!
+	  WAVLNode nodeParent = newNode.getParent();
+	  //CASE-1
+	  /*if (nodeParent.getRank()==0){
+		  if (nodeParent.getLeft().isExternalLeaf()||nodeParent.getRight().isExternalLeaf()){
+			  nodeParent.rankPromote();
+			  treeBalance(nodeParent);
+		  }
+	  }*/
+	  if (newNode.getRankDiff()==0){
+		  if (nodeParent.getLeft().getRankDiff()==2||nodeParent.getRight().getRankDiff()==2){
+			  
+		  }
+		  else {
+			nodeParent.rankPromote();
+			treeBalance(nodeParent);  
+		  }
+		  
+	  }
+	  //CASE-2
+	  
+	  
+  }
 
   /**
    * public int insert(int k, String i)
@@ -124,10 +161,35 @@ public WAVLTree(){
    * returns -1 if an item with key k already exists in the tree.
    */
    public int insert(int k, String i) {
-	    	   
-	  return 42;
+	   if (this.size==0){
+		   this.root = new WAVLNode(k,i,null);
+		   size++;
+		   return 0;
+	   }
+	  //find the place to insert the new item
+	   WAVLNode newNode = findPlace(k,i,this.root);
+	   if (k>newNode.parent.key){
+		   newNode.parent.right=newNode;
+	   }
+	   else if (k<newNode.parent.key){
+		   newNode.parent.left=newNode;
+	   }
+	   else{
+		   return -1;
+	   }
+	   int cntBalance = 0;
+	   //case B - insertion while the parent is not a leaf
+	   //no balance needed
+	   if (newNode.parent.isInternalNode()){
+		   return cntBalance;
+	   }
+	   //case A - insertion
+	   
+	   
+	   
+	   return cntBalance;
    }
-
+   
   /**
    * public int delete(int k)
    *
@@ -332,6 +394,7 @@ public WAVLTree(){
 			this.rank = rank;
 		}
 		public int getRankDiff(){
+			//case root
 			return (this.rank-this.parent.rank);
 		}
 		public boolean isExternalLeaf(){
