@@ -100,17 +100,7 @@ public WAVLTree(){
 	  return rec_search(this.root, k);
   }
   
-  public void Rotate_Left(WAVLNode node)
-  {
-	  
-	  WAVLNode b = node.left;
-	  node.left = node.parent;
-	  node.parent = node;
-	  node.left.right = b;
-	  b.parent = node.left;
-
-	  return;
-  }
+  
   
    private WAVLNode findPlace(int k,String i, WAVLNode node){
 	   if (node.isExternalLeaf()){
@@ -136,7 +126,7 @@ public WAVLTree(){
 			  nodeParent.rankPromote();
 			  treeBalance(nodeParent);
 		  }
-	  }*/
+	  }
 	  if (newNode.getRankDiff()==0){
 		  if (nodeParent.getLeft().getRankDiff()==2||nodeParent.getRight().getRankDiff()==2){
 			  
@@ -146,8 +136,35 @@ public WAVLTree(){
 			treeBalance(nodeParent);  
 		  }
 		  
+		
+	  }*/
+	  if (newNode.getRankDiff()==0){
+		  // CASE #1
+		  if (nodeParent.childDiffs(1)){
+			  nodeParent.rankPromote();
+			  treeBalance(nodeParent);
+		  }
+		  
+		  if ((nodeParent.childDiffs(2))&&(newNode.getRight().getRankDiff()==2)&&(newNode.getLeft().getRankDiff()==1)){
+			  //CASE #2
+			  if((newNode.getRight().isInternalNode())){
+				  newNode.rotateRight();
+				  nodeParent.rankDemote();
+			  }
+			  //CASE #3
+			  else{
+				  WAVLNode tempRight = newNode.getRight();
+				  newNode.rotateRight();
+				  newNode.rotateRight();
+				  newNode.rankDemote();
+				  nodeParent.rankDemote();
+				  tempRight.rankPromote();
+				  
+				  
+			  }
+		  }
 	  }
-	  //CASE-2
+	 
 	  
 	  
   }
@@ -425,8 +442,13 @@ public WAVLTree(){
 		public void rankDemote(){
 			this.rank = this.rank-1;
 		}
+		public boolean childDiffs(int num){
+			if (this.getLeft().getRankDiff()==num||this.getRight().getRankDiff()==num)
+				return true;
+			return false;
+		}
 		
-		public void Rotate_Right(){
+		public void rotateRight(){
 			  WAVLNode prevParent = this.getParent();
 			  WAVLNode prevRight = this.getRight();
 			  
@@ -437,7 +459,17 @@ public WAVLTree(){
 			  
 			  
 			  
-		  }
+		}
+		public void rotateLeft(WAVLNode node){
+			  
+			  WAVLNode b = node.left;
+			  node.left = node.parent;
+			  node.parent = node;
+			  node.left.right = b;
+			  b.parent = node.left;
+
+			  return;
+		}
 		
   }
   
