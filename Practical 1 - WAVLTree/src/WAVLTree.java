@@ -448,28 +448,35 @@ public WAVLTree(){
 			return false;
 		}
 		
-		public void rotateRight(){
-			  WAVLNode prevParent = this.getParent();
-			  WAVLNode prevRight = this.getRight();
+		public WAVLNode rotateRight(){
+			
+			WAVLNode leftNode = this.left;
+			this.left = leftNode.right;
+			leftNode.right = this;
 			  
-			  this.parent = prevParent.getParent();
-			  this.right = prevParent;
-			  prevParent.left = prevRight;
-			  prevParent.parent = this;
-			  
-			  
+			return leftNode;
 			  
 		}
-		public void rotateLeft(WAVLNode node){
+		public WAVLNode rotateLeft(){
 			  
-			  WAVLNode b = node.left;
-			  node.left = node.parent;
-			  node.parent = node;
-			  node.left.right = b;
-			  b.parent = node.left;
-
-			  return;
+			WAVLNode rightNode = this.right;
+			this.right = rightNode.left;
+			rightNode.left = this;
+			
+			return rightNode;
 		}
+		
+		public WAVLNode doubleRotateLeftRight () {
+			this.left = this.left.rotateLeft();
+			WAVLNode Node = this.rotateRight();
+			return Node;
+			}
+		
+		public WAVLNode doubleRotateRightLeft () {
+			this.right = this.right.rotateRight();
+			WAVLNode Node = this.rotateLeft();
+			return Node;
+			}
 		
   }
   
@@ -493,6 +500,11 @@ public WAVLTree(){
 	  System.out.println(bin_tree.search(2));
 	  System.out.println(Arrays.toString(bin_tree.keysToArray()));
 	  System.out.println(Arrays.toString(bin_tree.infoToArray()));
+	  
+	  //Case #1 test:
+	  bin_tree.root = new WAVLNode(3, "Haim",null);
+	  bin_tree.root.left = new WAVLNode(2, "maya", bin_tree.root);
+	  bin_tree.root.right = new WAVLNode(6, "ron", bin_tree.root);
 	  
 	  
 
