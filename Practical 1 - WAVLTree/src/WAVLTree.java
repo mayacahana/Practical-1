@@ -53,7 +53,7 @@ public int getSize() {
 public WAVLTree(){
 	this.root=null;
 	this.min=null;
-	this.min=null;
+	this.max=null;
 	this.size=0;
 	
 
@@ -213,6 +213,9 @@ public WAVLTree(){
 
    public String min()
    {
+	   if (this.min==null){
+		   return null;
+	   }
 	   return this.min.info;
 	   
    }
@@ -224,6 +227,9 @@ public WAVLTree(){
     */
    public String max()
    {
+	   if (this.max==null){
+		   return null;
+	   }
 	   return this.max.info;
    }
   /**
@@ -233,45 +239,31 @@ public WAVLTree(){
    * or an empty array if the tree is empty.
    */
    //it's working but i'm not sure it's a good idea to make a public list for the list
-   List<Integer> list = new ArrayList<>();
+   List<Integer> keys_list = new ArrayList<>();
    
    public int[] keysToArray()
    {
 	   
-	   	 list.clear();
+	     keys_list.clear();
          rec_keysToArray(this.root);
          
-         int[] ret = new int[list.size()];
+         int[] ret = new int[keys_list.size()];
          for (int i=0; i < ret.length; i++)
          {
-             ret[i] = list.get(i).intValue();
+             ret[i] = keys_list.get(i).intValue();
          }
          return ret;        
          
    }
    
    public void rec_keysToArray(WAVLNode node){
-	   if (node == null || node.key==Integer.MAX_VALUE) {
+	   if (node == null || node.isExternalLeaf()) {
 			return;
 		}
 	   rec_keysToArray(node.left);
-	   list.add(node.key);
+	   keys_list.add(node.key);
 	   rec_keysToArray(node.right);
 	return;
-   }
-   
-   private int in_Order_info(int pos, String[] arr, WAVLNode node){
-	   if (!node.isExternalLeaf() && !node.isInternalNode()){
-		   
-		   int i = in_Order_info(pos,arr,node.getLeft());
-		   arr[i]=node.getInfo();
-		   return in_Order_info(i+1,arr,node.getRight());
-	   }
-	   if (node.isExternalLeaf()){
-		   return pos;
-	   }
-	   arr[pos]=node.info;
-	   return pos+1;
    }
    
 
@@ -282,11 +274,33 @@ public WAVLTree(){
    * sorted by their respective keys,
    * or an empty array if the tree is empty.
    */
+   
+  List<String> info_list = new ArrayList<>();
   public String[] infoToArray()
   {
-	  String[] arr = new String[this.size];
-      in_Order_info(0,arr,this.root);
-      return arr;                   
+	   
+	  	info_list.clear();
+	  	rec_infoToArray(this.root);
+        
+        String[] ret = new String[info_list.size()];
+        for (int i=0; i < ret.length; i++)
+        {
+            ret[i] = info_list.get(i);
+        }
+        return ret;        
+                         
+  }
+  
+  
+  
+  public void rec_infoToArray(WAVLNode node){
+	   if (node == null || node.isExternalLeaf()) {
+			return;
+		}
+	   rec_infoToArray(node.left);
+	   info_list.add(node.info);
+	   rec_infoToArray(node.right);
+	return;
   }
 
    /**
@@ -430,17 +444,21 @@ public WAVLTree(){
   //for tests//
   public static void main(String[] args){
 	  //System.out.println(Arrays.toString(new int[]{3}));
-	  System.out.println("3");
+	  //System.out.println("3");
 	  
 	  //Function tests//
 	  WAVLTree bin_tree = new WAVLTree();
 	  
+	  bin_tree.root = new WAVLNode(3, "Haim",null);
+	  bin_tree.root.left = new WAVLNode(2, "maya", bin_tree.root);
+	  bin_tree.root.right = new WAVLNode(6, "ron", bin_tree.root);
 	  System.out.println(bin_tree.size);
 	  System.out.println(bin_tree.size());
 	  System.out.println(bin_tree.empty());
-	  //System.out.println(bin_tree.min());
-	  //System.out.println(bin_tree.max());
-	  System.out.println(bin_tree.search(6));
+	  System.out.println(bin_tree.min());
+	  System.out.println(bin_tree.max());
+	  System.out.println(bin_tree.search(5));
+	  System.out.println(bin_tree.search(2));
 	  System.out.println(Arrays.toString(bin_tree.keysToArray()));
 	  System.out.println(Arrays.toString(bin_tree.infoToArray()));
 	  
