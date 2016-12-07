@@ -167,7 +167,7 @@ public WAVLTree(){
 	   }
 	  //find the place to insert the new item
 	   WAVLNode newNode = findPlace(k,i,this.root);
-	   
+	   //connect the parent to the new node
 	   if (k>newNode.parent.key){
 		   newNode.parent.right=newNode;
 	   }
@@ -177,6 +177,7 @@ public WAVLTree(){
 	   else{
 		   return -1;
 	   }
+	   
 	   int cntBalance = 0;
 	   //case B - insertion while the parent is not a leaf
 	   //no balance needed
