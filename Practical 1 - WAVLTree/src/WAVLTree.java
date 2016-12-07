@@ -117,39 +117,24 @@ public WAVLTree(){
 	   return node;
 	   
    }
-  private void treeBalance(WAVLNode newNode){
+  public int treeBalance(WAVLNode newNode, int cnt){
+	  cnt++;
 	  //detect the case!!!
 	  WAVLNode nodeParent = newNode.getParent();
-	  //CASE-1
-	  /*if (nodeParent.getRank()==0){
-		  if (nodeParent.getLeft().isExternalLeaf()||nodeParent.getRight().isExternalLeaf()){
-			  nodeParent.rankPromote();
-			  treeBalance(nodeParent);
-		  }
-	  }
-	  if (newNode.getRankDiff()==0){
-		  if (nodeParent.getLeft().getRankDiff()==2||nodeParent.getRight().getRankDiff()==2){
-			  
-		  }
-		  else {
-			nodeParent.rankPromote();
-			treeBalance(nodeParent);  
-		  }
-		  
-		
-	  }*/
 	  if (newNode.getRankDiff()==0){
 		  // CASE #1
 		  if (nodeParent.childDiffs(1)){
 			  nodeParent.rankPromote();
-			  treeBalance(nodeParent);
+			  return cnt+treeBalance(nodeParent,cnt);
 		  }
 		  
 		  if ((nodeParent.childDiffs(2))&&(newNode.getRight().getRankDiff()==2)&&(newNode.getLeft().getRankDiff()==1)){
+			  
 			  //CASE #2
 			  if((newNode.getRight().isInternalNode())){
 				  newNode.rotateRight();
 				  nodeParent.rankDemote();
+				  return 1; //completed
 			  }
 			  //CASE #3
 			  else{
@@ -159,14 +144,11 @@ public WAVLTree(){
 				  newNode.rankDemote();
 				  nodeParent.rankDemote();
 				  tempRight.rankPromote();
-				  
-				  
+				  return 1; //completed  
 			  }
 		  }
 	  }
-	 
-	  
-	  
+	  return cnt; //check this
   }
 
   /**
@@ -185,6 +167,7 @@ public WAVLTree(){
 	   }
 	  //find the place to insert the new item
 	   WAVLNode newNode = findPlace(k,i,this.root);
+	   
 	   if (k>newNode.parent.key){
 		   newNode.parent.right=newNode;
 	   }
@@ -201,10 +184,7 @@ public WAVLTree(){
 		   return cntBalance;
 	   }
 	   //case A - insertion
-	   
-	   
-	   
-	   return cntBalance;
+	   return treeBalance(newNode,0);
    }
    
   /**
@@ -491,6 +471,10 @@ public WAVLTree(){
 	  bin_tree.root = new WAVLNode(3, "Haim",null);
 	  bin_tree.root.left = new WAVLNode(2, "maya", bin_tree.root);
 	  bin_tree.root.right = new WAVLNode(6, "ron", bin_tree.root);
+	  
+	  WAVLTree tree = new WAVLTree();
+	  tree.insert(2, "ggsdf");
+	  tree.insert(5, "fkgjlgd");
 	  System.out.println(bin_tree.size);
 	  System.out.println(bin_tree.size());
 	  System.out.println(bin_tree.empty());
