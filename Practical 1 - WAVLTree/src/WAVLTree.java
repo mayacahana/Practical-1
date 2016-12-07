@@ -168,7 +168,7 @@ public WAVLTree(){
 	  //find the place to insert the new item
 	   WAVLNode newNode = findPlace(k,i,this.root);
 	   
-	   if (k>newNode.parent.key){
+/*	   if (k>newNode.parent.key){
 		   newNode.parent.right=newNode;
 	   }
 	   else if (k<newNode.parent.key){
@@ -176,15 +176,16 @@ public WAVLTree(){
 	   }
 	   else{
 		   return -1;
-	   }
+	   }*/
 	   int cntBalance = 0;
 	   //case B - insertion while the parent is not a leaf
 	   //no balance needed
-	   if (newNode.parent.isInternalNode()){
-		   return cntBalance;
-	   }
+//	   if (newNode.parent.isInternalNode()){
+//		   return cntBalance;
+//	   }
 	   //case A - insertion
 	   return treeBalance(newNode,0);
+	   
    }
    
   /**
@@ -475,7 +476,9 @@ public WAVLTree(){
 	  WAVLTree tree = new WAVLTree();
 	  tree.insert(2, "ggsdf");
 	  tree.insert(5, "fkgjlgd");
-	  System.out.println(bin_tree.size);
+	  System.out.println(Arrays.toString(tree.keysToArray()));
+	  System.out.println(Arrays.toString(tree.infoToArray()));
+/*	  System.out.println(bin_tree.size);
 	  System.out.println(bin_tree.size());
 	  System.out.println(bin_tree.empty());
 	  System.out.println(bin_tree.min());
@@ -488,7 +491,7 @@ public WAVLTree(){
 	  //Case #1 test:
 	  bin_tree.root = new WAVLNode(3, "Haim",null);
 	  bin_tree.root.left = new WAVLNode(2, "maya", bin_tree.root);
-	  bin_tree.root.right = new WAVLNode(6, "ron", bin_tree.root);
+	  bin_tree.root.right = new WAVLNode(6, "ron", bin_tree.root);*/
 	  
 
   }
