@@ -490,7 +490,6 @@ public WAVLTree(){
 	  bin_tree.root.left = new WAVLNode(2, "maya", bin_tree.root);
 	  bin_tree.root.right = new WAVLNode(6, "ron", bin_tree.root);
 	  
-	  
 
   }
   
