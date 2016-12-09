@@ -13,6 +13,7 @@ import java.util.List;
  * An implementation of a WAVL Tree with
  * distinct integer keys and info
  *
+ *
  */
 
 
@@ -207,8 +208,6 @@ public WAVLTree(){
 	   }
 	   //case A - insertion
 	   
-	   
-	   
 	   if(max == null || k>max.key){
 		   max = newNode;
 	   }
@@ -245,7 +244,7 @@ public WAVLTree(){
 	   if (this.min==null){
 		   return null;
 	   }
-	   return this.min.info;
+	   return this.min.getInfo();
 	   
    }
    /**
@@ -259,7 +258,7 @@ public WAVLTree(){
 	   if (this.max==null){
 		   return null;
 	   }
-	   return this.max.info;
+	   return this.max.getInfo();
    }
   /**
    * public int[] keysToArray()
@@ -459,14 +458,30 @@ public WAVLTree(){
 				return true;
 			return false;
 		}
-		
-		public WAVLNode rotateRight(){
+		/*
+		 * Rotates "node" right:
+		     *
+		     *            a    node--> O
+		     *          /  \   ==>   /  \
+		     * node--> O    b       x    a
+		     *       /  \               / \
+		     *     x     y            y    b
+		     *
+		     * throws Exception if gets an illegal node for rotation
+		*/
+		public void rotateRight(){
 			
-			WAVLNode leftNode = this.left;
-			this.left = leftNode.right;
-			leftNode.right = this;
+			  WAVLNode prevParent = this.getParent();
+			  if (prevParent == null){
+				  return;
+			  }
 			  
-			return leftNode;
+			  WAVLNode prevRight = this.getRight();
+			  WAVLNode prevGrandfather = prevParent.getParent();
+			  this.parent = prevParent.getParent();
+			  this.right = prevParent;
+			  prevParent.left = prevRight;
+			  prevParent.parent = this;
 			  
 		}
 		public WAVLNode rotateLeft(){
