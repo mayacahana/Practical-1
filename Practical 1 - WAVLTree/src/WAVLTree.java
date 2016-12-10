@@ -133,17 +133,19 @@ public class WAVLTree {
 	   return new WAVLNode(k,i,node.getParent()); 
 	   }
    
-  public int treeBalance(WAVLNode newNode, int cnt){
-	  cnt++;
+  public int insertBalance(WAVLNode newNode){
+	  if(newNode.getParent()==null)
+		  return 0;
 	  //detect the case!!!
 	  WAVLNode nodeParent = newNode.getParent();
+	  
 	  if (newNode.getRankDiff()==0){
 		  // CASE #1
 		  if (nodeParent.childDiffs(1)){
 			  nodeParent.rankPromote();
-			  return cnt+treeBalance(nodeParent,cnt);
+			  return 1+insertBalance(nodeParent); //recursion- go up
 		  }
-		  
+		  //fix this
 		  if ((nodeParent.childDiffs(2))&&(newNode.getRight().getRankDiff()==2)&&(newNode.getLeft().getRankDiff()==1)){
 			  
 			  //CASE #2
@@ -164,7 +166,7 @@ public class WAVLTree {
 			  }
 		  }
 	  }
-	  return cnt; //check this
+	  return 100; //check this
   }
 
   /**
@@ -189,17 +191,19 @@ public class WAVLTree {
 	   if (newNode==null){
 		   return -1;
 	   }
+	   
 	   //connect the parent to the new node
 
 	   if (k>newNode.parent.key){
 		   newNode.parent.right=newNode;
-		   size++;
+		   
 	   }
 	   else if (k<newNode.parent.key){
 		   newNode.parent.left=newNode;
-		   size++;
+		   
 	   }
-
+	   //update the size
+	   size++;
 	   int cntBalance = 0;
 	   //case B - insertion while the parent is not a leaf
 	   //no balance needed
@@ -208,14 +212,14 @@ public class WAVLTree {
 	   }
 	   //case A - insertion
 	   
-	   if(max == null || k>max.key){
-		   max = newNode;
+	   if(max == null || k>max.getKey()){
+		   this.setMax(newNode);
 	   }
-	   else if(min == null || k<min.key){
-		   min = newNode;
+	   else if(min == null || k<min.getKey()){
+		   this.setMin(newNode);
 	   }
 	   
-	   return treeBalance(newNode,0);
+	   return insertBalance(newNode,0);
    }
    private int deleteBalance(WAVLNode node){
 	   return 0;
@@ -317,7 +321,21 @@ public class WAVLTree {
 				   return 0;
 			   }
 		   }
-		   
+		   //deleting a leaf (2,1) case 3
+		   if ((nodeParent.getChildDiffs(1, 2))||(nodeParent.getChildDiffs(2, 1))||(nodeParent.getChildDiffs(2, 2))){
+			   if (nodeToDelete.isInternalLeaf()){
+				   if (nodeParent.getLeft()==nodeToDelete){
+					   nodeParent.setLeft(new WAVLNode(nodeParent));
+					   return deleteBalance(nodeParent.getLeft());
+				   }
+				   else{
+					   nodeParent.setRight(new WAVLNode(nodeParent));
+					   return deleteBalance(nodeParent.getRight());
+				   }
+			   } else { //deleting an unary node (2,1\2)
+				   if(
+			   }
+		   }
 		   
 	   }
 	   
