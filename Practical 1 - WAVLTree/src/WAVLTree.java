@@ -151,15 +151,15 @@ public WAVLTree(){
 			  
 			  //CASE #2
 			  if((newNode.getRight().isInternalNode())){
-				  newNode.rotateRight();
+				  rotateRight(newNode);
 				  nodeParent.rankDemote();
 				  return 1; //completed
 			  }
 			  //CASE #3
 			  else{
+				  
 				  WAVLNode tempRight = newNode.getRight();
-				  newNode.rotateRight();
-				  newNode.rotateRight();
+				  doubleRotate (newNode);
 				  newNode.rankDemote();
 				  nodeParent.rankDemote();
 				  tempRight.rankPromote();
@@ -409,6 +409,21 @@ public WAVLTree(){
 			prevLeft.parent = prevParent;
 		}
 	}
+   public void doubleRotate(WAVLNode node){
+	   if(node.getParent().getLeft()==node){
+		   WAVLNode rightNode = node.getRight();
+		   rotateLeft(rightNode);
+		   rotateRight(rightNode);
+		   
+	   }
+	   else{
+		   WAVLNode leftNode = node.getLeft();
+		   rotateRight(leftNode);
+		   rotateLeft(leftNode);
+		   
+	   }
+   }
+   
 
   /**
    * public class WAVLNode
@@ -526,20 +541,6 @@ public WAVLTree(){
 			return false;
 		}
 		
-		
-		
-		
-		public WAVLNode doubleRotateLeftRight () {
-			this.left = this.left.rotateLeft();
-			WAVLNode Node = this.rotateRight();
-			return Node;
-			}
-		
-		public WAVLNode doubleRotateRightLeft () {
-			this.right = this.right.rotateRight();
-			WAVLNode Node = this.rotateLeft();
-			return Node;
-			}
 		
   }
   
