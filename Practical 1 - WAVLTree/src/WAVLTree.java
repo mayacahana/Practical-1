@@ -354,15 +354,25 @@ public WAVLTree(){
 		  }
 		  
 		  WAVLNode prevRight = node.getRight();
-		  WAVLNode prevGrandfather = prevParent.getParent();
+		  WAVLNode prevGrandparent = prevParent.getParent();
 		  //if the current father is the root
 		  if (prevParent==this.getRoot()){
 			  this.setRoot(node);
 		  }
-		  node.parent = prevParent.getParent();
+		  if (prevGrandparent!=null){
+			  if(prevParent == prevGrandparent.getRight()){
+				  prevGrandparent.setRight(node);
+			  }else {
+				  prevGrandparent.setLeft(node);
+			  }
+		  }
+		  node.parent = prevGrandparent;
 		  node.right = prevParent;
 		  prevParent.left = prevRight;
 		  prevParent.parent = node;
+		  if(prevRight != null){
+			  prevRight.parent=prevParent;
+		  }
 		  
 	}
 
