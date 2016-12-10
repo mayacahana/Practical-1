@@ -346,6 +346,12 @@ public WAVLTree(){
    {
 	   return this.getSize(); 
    }
+   /**
+    * public void rotateRight
+    * 
+    * Rotate right from the given node (this node will go up)
+    * @param node
+    */
    public void rotateRight(WAVLNode node){
 		
 		  WAVLNode prevParent = node.getParent();
@@ -374,6 +380,34 @@ public WAVLTree(){
 			  prevRight.parent=prevParent;
 		  }
 		  
+	}
+   
+   public void rotateLeft(WAVLNode node){
+		
+	   	WAVLNode prevParent = node.getParent();
+		  if (prevParent == null){
+			  return;
+		  }
+		WAVLNode prevLeft = node.getLeft();
+		WAVLNode prevGrandparent = prevParent.getParent();
+		if (prevParent==this.getRoot()){
+			this.setRoot(node);
+		}
+		if (prevGrandparent!=null){
+			if(prevParent == prevGrandparent.getRight()){
+				prevGrandparent.setRight(node);
+			} else{
+				prevGrandparent.setLeft(node);
+			}
+		}
+		node.parent = prevGrandparent;
+		node.left = prevParent;
+		prevParent.right = prevLeft;
+		prevParent.parent = node;
+		
+		if (prevLeft !=null){
+			prevLeft.parent = prevParent;
+		}
 	}
 
   /**
@@ -493,14 +527,7 @@ public WAVLTree(){
 		}
 		
 		
-		public WAVLNode rotateLeft(){
-			  
-			WAVLNode rightNode = this.right;
-			this.right = rightNode.left;
-			rightNode.left = this;
-			
-			return rightNode;
-		}
+		
 		
 		public WAVLNode doubleRotateLeftRight () {
 			this.left = this.left.rotateLeft();
