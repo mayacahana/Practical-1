@@ -411,6 +411,7 @@ public WAVLTree(){
 	}
    public void doubleRotate(WAVLNode node){
 	   if(node.getParent().getLeft()==node){
+		   //Rotate left and rotate right
 		   WAVLNode rightNode = node.getRight();
 		   rotateLeft(rightNode);
 		   rotateRight(rightNode);
@@ -418,10 +419,82 @@ public WAVLTree(){
 	   }
 	   else{
 		   WAVLNode leftNode = node.getLeft();
+		   //Rotate right and then rotate left
 		   rotateRight(leftNode);
 		   rotateLeft(leftNode);
 		   
 	   }
+   }
+   /*
+    * returns the node which is the predecessor of the input "node"
+    * The predecessor - the node with the maximum key that is less than node's key
+    * Main use: to find the node with the maximun key in the tree, in case the current maximum have
+    * been deleted
+    */
+   private WAVLNode findPredecessor(WAVLNode node){
+	   if(node == null){
+		   return null;
+	   }
+	   WAVLNode temp = node;
+	   if (node.getLeft()!=null){
+		   temp = temp.getLeft();
+		   while(temp.getRight()!=null){
+			   temp = temp.getRight();
+		   }
+		   return temp;
+	   }
+	   //if the left is null
+	   if (node.getParent()==null)
+		   return null;
+	   //go up until the next left right
+	   if (node == node.getParent().getLeft()){
+		   return node.getParent();
+	   }
+	   while (temp == temp.getParent().getLeft()){
+		   temp = temp.getParent();
+	   }
+	   if (temp.getParent() != null)
+		   return temp.getParent();
+	   return null;
+	   
+   }
+   /*
+    * returns the node which is the successor of the input "node"
+    * 
+    * The successor - the node with the minimum key which is
+    * higher than the node's key.
+    * Main use: to find the node with the minimum key in the tree after the current minimum have been
+    * deleted.
+    */
+   private WAVLNode findSuccessor(WAVLNode node){
+	   if(node == null){
+		   return null;
+	   }
+	   WAVLNode temp = node;
+	   if(node.getRight()!= null){
+		   temp = node.getRight();
+		   while (temp.getLeft()!=null){
+			   temp = temp.getLeft();
+		   }
+		   return temp;
+	   }
+	   //what if the right is null?
+	   //the successor will be the lowest ancestor
+	   //of the node, which the node is in its left subtree
+	   if (node.getParent()==null) //no parents->no successor
+		   return null;
+	   //go up until the next turn right
+	   if (node == node.getParent().getLeft()){
+		   return node.getParent();
+	   }
+	   while (temp == temp.getParent().getRight()){
+		   temp = temp.getParent();
+	   }
+	   if (temp.getParent() != null)
+		   return temp.getParent();
+	   
+	   return null;
+	   
    }
    
 
@@ -534,7 +607,10 @@ public WAVLTree(){
 		public void rankDemote(){
 			this.rank = this.rank-1;
 		}
-		
+		/*
+		 * the function returns TRUE if there is a diff with value num 
+		 * between the node and one of his childs, FALSE otherwise
+		 */
 		public boolean childDiffs(int num){
 			if (this.getLeft().getRankDiff()==num||this.getRight().getRankDiff()==num)
 				return true;
