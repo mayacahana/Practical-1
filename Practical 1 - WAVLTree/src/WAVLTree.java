@@ -40,6 +40,9 @@ public void setMax(WAVLNode max) {
 public void setMin(WAVLNode min) {
 	this.min=min;
 	}
+public void setRoot(WAVLNode root){
+	this.root = root;
+}
 public int getSize() {
 		return size;
 	}
@@ -343,6 +346,25 @@ public WAVLTree(){
    {
 	   return this.getSize(); 
    }
+   public void rotateRight(WAVLNode node){
+		
+		  WAVLNode prevParent = node.getParent();
+		  if (prevParent == null){
+			  return;
+		  }
+		  
+		  WAVLNode prevRight = node.getRight();
+		  WAVLNode prevGrandfather = prevParent.getParent();
+		  //if the current father is the root
+		  if (prevParent==this.getRoot()){
+			  this.setRoot(node);
+		  }
+		  node.parent = prevParent.getParent();
+		  node.right = prevParent;
+		  prevParent.left = prevRight;
+		  prevParent.parent = node;
+		  
+	}
 
   /**
    * public class WAVLNode
@@ -453,37 +475,14 @@ public WAVLTree(){
 		public void rankDemote(){
 			this.rank = this.rank-1;
 		}
+		
 		public boolean childDiffs(int num){
 			if (this.getLeft().getRankDiff()==num||this.getRight().getRankDiff()==num)
 				return true;
 			return false;
 		}
-		/*
-		 * Rotates "node" right:
-		     *
-		     *            a    node--> O
-		     *          /  \   ==>   /  \
-		     * node--> O    b       x    a
-		     *       /  \               / \
-		     *     x     y            y    b
-		     *
-		     * throws Exception if gets an illegal node for rotation
-		*/
-		public void rotateRight(){
-			
-			  WAVLNode prevParent = this.getParent();
-			  if (prevParent == null){
-				  return;
-			  }
-			  
-			  WAVLNode prevRight = this.getRight();
-			  WAVLNode prevGrandfather = prevParent.getParent();
-			  this.parent = prevParent.getParent();
-			  this.right = prevParent;
-			  prevParent.left = prevRight;
-			  prevParent.parent = this;
-			  
-		}
+		
+		
 		public WAVLNode rotateLeft(){
 			  
 			WAVLNode rightNode = this.right;
