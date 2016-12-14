@@ -783,6 +783,7 @@ public class WAVLTree {
 	  System.out.println(bin_tree.search(5));
 	  System.out.println(bin_tree.search(2));
 	  System.out.println(Arrays.toString(bin_tree.keysToArray()));
+	  
 	  System.out.println(Arrays.toString(bin_tree.infoToArray()));
 	  
 	  //Case #1 test:
@@ -791,6 +792,7 @@ public class WAVLTree {
 	  bin_tree.root.right = new WAVLNode(6, "ron", bin_tree.root);
 	  
 */
+	  
   }
   
 
