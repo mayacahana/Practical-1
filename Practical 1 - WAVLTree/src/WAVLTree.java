@@ -783,7 +783,6 @@ public class WAVLTree {
 	  System.out.println(bin_tree.search(5));
 	  System.out.println(bin_tree.search(2));
 	  System.out.println(Arrays.toString(bin_tree.keysToArray()));
-	  
 	  System.out.println(Arrays.toString(bin_tree.infoToArray()));
 	  
 	  //Case #1 test:
