@@ -415,6 +415,8 @@ public class WAVLTree {
 				   
 		   }
 	   }
+	//problem if we get to here
+	return 0;
    }
   /**
    * public int delete(int k)
@@ -931,6 +933,7 @@ public class WAVLTree {
 	  System.out.println(tree.insert(2, "ggsdf"));
 	  System.out.println(tree.insert(5, "fkgjlgd"));
 	  System.out.println(tree.insert(5, "czxxzc"));
+	  System.out.println(tree.delete(5));
 	  System.out.println(tree.size);
 	  System.out.println(tree.size());
 	  System.out.println(tree.empty());
