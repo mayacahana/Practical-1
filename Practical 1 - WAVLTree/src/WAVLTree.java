@@ -182,6 +182,7 @@ public class WAVLTree {
 	  }
 	return 0;
   }
+  
 
   /**
    * public int insert(int k, String i)
@@ -200,12 +201,12 @@ public class WAVLTree {
 		   return 0;
 	   }
 	  //find the place to insert the new item
-	   WAVLNode Node_location = findPlace(k, i,this.getRoot());
-	          if (Node_location.getKey() == k) {
+	   WAVLNode nodeLocation = findPlace(k, i,this.getRoot());
+	          if (nodeLocation.getKey() == k) {
     	   return -1;
        }
 
-	   WAVLNode newNode = new WAVLNode(k,i,Node_location);
+	   WAVLNode newNode = new WAVLNode(k,i,nodeLocation);
 	   
 	   
 	   //connect the parent to the new node
@@ -231,9 +232,111 @@ public class WAVLTree {
 	   return insertBalance(newNode);
    }
    
+   private void byPassNode(WAVLNode node, WAVLNode newNode){
+		  WAVLNode nodeParent = node.getParent();
+		  
+		  WAVLNode currentRight = newNode.getRight();
+		  WAVLNode currentLeft = newNode.getLeft();
+		  WAVLNode currentParent = newNode.getParent();
+		  
+		  // replacing node children to newNode left right pointers
+		  if (!node.getRight().isExternalLeaf() && !node.getLeft().isExternalLeaf()){
+			  newNode.setRank(node.getRank());
+			  if (node.getLeft() != newNode){
+				  newNode.setLeft(node.getLeft());
+				  node.getLeft().setParent(newNode);
+			  }
+			  if (node.getRight() != newNode){
+				  newNode.setRight(node.getRight());
+				  newNode.getRight().setParent(newNode);
+			  }
+		  
+		  //fixing the pointers on the old position of newNode
+		  if (node.getRight()!= newNode && node.getLeft()!=newNode){
+			  //if newNode is a leaf
+			  if (currentLeft.isInternalLeaf() && currentRight.isExternalLeaf()){
+				  if (newNode.isLeft()){
+					  currentParent.setLeft(currentLeft);
+					  currentLeft.setParent(currentParent);					  
+				  } else {
+					  currentParent.setRight(currentRight);
+					  currentRight.setParent(currentParent);
+				  }
+			  } else if (!currentLeft.isExternalLeaf() && currentRight.isExternalLeaf()){
+				  if (newNode.isLeft()){
+					  currentParent.setLeft(currentLeft);
+					  currentLeft.setParent(currentParent);
+				  } else {
+					  currentParent.setRight(currentLeft);
+					  currentLeft.setParent(currentParent);
+				  }
+			  } else if (currentLeft.isExternalLeaf() && !currentRight.isExternalLeaf()){
+				  if (newNode.isLeft()){
+					  currentParent.setLeft(currentRight);
+					  currentRight.setParent(currentParent);
+				  } else {
+					  currentParent.setRight(currentRight);
+					  currentRight.setParent(currentParent);
+				  	}
+			  	}
+		  	}
+		  
+		  }
+		  if (node.getParent() != null){
+			  newNode.setParent(nodeParent);
+			  if (node.isRight()){
+				  nodeParent.setRight(newNode);
+			  } else {
+				  nodeParent.setLeft(newNode);
+			  }
+		  } else { //if node is the root of the tree
+			  this.setRoot(newNode);
+			  newNode.setParent(null);
+		  }	  
+
+   }
    
    private int deleteBalance(WAVLNode node){
-	   return 0;
+	   if (node == null){
+		   return 0;
+	   }
+	   //check if the node is a leaf 
+	   //if have a rank diff = 0 
+	   if (node.isInternalLeaf()){
+		   if (node.checkDiffs(2, 2)){
+			   node.rankDemote();
+			   //up the problem
+			   return 1+deleteBalance(node.getParent());
+		   }
+		   else if (node.checkDiffs(1, 1))
+			   return 0;
+	   }
+	   // the node is not a leaf. check the diffs
+	   if (node.getRight().getRankDiff()<=2 && node.getLeft().getRankDiff()<=2){
+		   //no further actions are needed
+		   return 0;
+	   }
+	   // if we get to here - the node is not a valid WAVL
+	   if (node.getLeft().getRankDiff() == 3){
+		   
+		   if (node.getRight().getRankDiff() == 2){ //demote 
+			   node.rankDemote();
+			   return 1 + deleteBalance(node.getParent());
+		   }
+		   if (node.getRight().getRankDiff() == 1){
+			   WAVLNode nodeRight = node.getRight();
+			   
+			   // (2,2) node
+			   if (nodeRight.getLeft().getRankDiff() == 2 && nodeRight.getRight().getRankDiff() == 1){
+				   nodeRight.rankDemote();
+				   node.rankDemote();
+				   return 2+deleteBalance(node.getParent());
+			   }
+			   //rotation left
+			   
+		   }
+		   
+	   }
    }
   /**
    * public int delete(int k)
@@ -245,118 +348,69 @@ public class WAVLTree {
    */
    public int delete(int k)
    {
-	   return 0;
+	   WAVLNode nodeToDelete = searchForNode(k);
+	   
+	   WAVLNode nodeToBalance = null;
+	   
+	   //if the key does not exist
+	   if (nodeToDelete == null) //hceck this
+		   return -1;
+	   //maintain the min max
+	   if (nodeToDelete == this.getMin()){
+		   this.setMin(this.findSuccessor(nodeToDelete));
+	   }
+	   if (nodeToDelete == this.getMax()){
+		   this.setMax(this.findPredecessor(nodeToDelete));
+	   }
+	   
+	   WAVLNode nodeParent = nodeToDelete.getParent();
+	   WAVLNode nodeRight = nodeToDelete.getRight();
+	   WAVLNode nodeLeft = nodeToDelete.getLeft();
+	   //if nodeToDelete is a root or the only key in the tree
+	   if (nodeToDelete.getRight().isExternalLeaf() && nodeToDelete.left.isExternalLeaf()){
+		   if (nodeParent == null){
+			   this.setRoot(null);
+			   this.setMax(null);
+			   this.setMin(null);
+			   this.size = this.size - 1;
+		   } else if (nodeToDelete.isRight()){
+			   nodeParent.setRight(new WAVLNode(nodeParent));   
+		   } else if (nodeToDelete.isLeft()){
+			   nodeParent.setLeft(new WAVLNode(nodeParent));
+		   }
+		   nodeToBalance = nodeParent;
+	   } else { 
+		   //check if have only left child
+		   // if have only child - bypass him
+		   if (nodeRight.isExternalLeaf()){
+			   nodeToBalance = nodeToDelete.getParent();
+			   //replace the node with his left child
+			   byPassNode(nodeToDelete, nodeToDelete.getLeft());
+		   }
+		   // if the node have two children
+		   // or only right child
+		   else {
+			   if (nodeLeft.isExternalLeaf()){
+				   nodeToBalance = nodeToDelete.getParent();
+				   //replace the node with his right child
+				   byPassNode(nodeToDelete, nodeToDelete.getRight());
+			   } else {
+				   WAVLNode nodeSuccessor = this.findSuccessor(nodeToDelete);
+				   nodeToBalance = nodeSuccessor.getParent();
+				   if (nodeToBalance == nodeToDelete){
+					   nodeToBalance = nodeSuccessor;
+				   }
+				   byPassNode(nodeToDelete, nodeSuccessor);
+			   }
+		   }
+	   }
+	   
+	   
+	   this.size = this.size()-1;
+	   //balancing the tree: 
+	   return deleteBalance(nodeToBalance);
    }
    
-//   public int delete(int k)
-//   {
-//	   WAVLNode nodeToDelete = searchForNode(k);
-//	   //if the key k does not exist
-//	   if (nodeToDelete == null)
-//		   return -1;
-//	   //maintain the min\max pointers
-//	   if (nodeToDelete == this.getMax())
-//		   this.setMax(this.findPredecessor(nodeToDelete));
-//	   if (nodeToDelete == this.getMin())
-//		   this.setMin(this.findSuccessor(nodeToDelete));
-//	   //update the size
-//	   this.size = this.size - 1;
-//	   //DELETE CASES
-//	   //1# DELETING A LEAF
-//	   int cntBalance = 0;
-//	   WAVLNode nodeParent = nodeToDelete.getParent();
-//	   //if the nodeToDelete is the root
-//	   if (nodeParent != null){
-//		   if (nodeParent.getRight().getRankDiff()==1 && nodeParent.getLeft().getRankDiff()==1){
-//			   if (!nodeToDelete.isInternalLeaf()){
-//				   if (nodeToDelete == nodeParent.getRight()){
-//					   nodeParent.setRight(new WAVLNode(nodeParent));
-//				   }
-//				   else{
-//					   nodeParent.setLeft(new WAVLNode(nodeParent));
-//				   }
-//				   return 0;
-//			   }
-//			   //deleting an unary node y case 1
-//			   else{
-//				   if(nodeToDelete.getRight().isExternalLeaf()){
-//					   if (nodeParent.getLeft()==nodeToDelete){
-//						   nodeParent.setLeft(nodeToDelete.getLeft());
-//					   }
-//					   else {
-//						   nodeParent.setRight(nodeToDelete.getLeft());
-//					   }
-//				   } else { //the left child is external
-//					   if (nodeParent.getLeft()==nodeToDelete){
-//						   nodeParent.setLeft(nodeToDelete.getRight());
-//					   }else {
-//						   nodeParent.setRight(nodeToDelete.getRight());
-//					   }
-//				   }
-//				   return 0;
-//			   }
-//			   
-//		   }
-//		   //deleting an leaf y case 2 (need balancing)
-//		   if ((nodeParent.getRight().isExternalLeaf()&&(nodeParent.getChildDiffs(1, 2)))||
-//				   (nodeParent.getLeft().isExternalLeaf()&&(nodeParent.getChildDiffs(2, 1)))){
-//			   if (!nodeToDelete.isInternalLeaf()){
-//				   if (nodeToDelete == nodeParent.getRight()){
-//					   nodeParent.setRight(new WAVLNode(nodeParent));
-//					   nodeParent.rankDemote();
-//					   return (deleteBalance(nodeParent));
-//					   
-//				   }
-//				   else{
-//					   nodeParent.setLeft(new WAVLNode(nodeParent));
-//					   nodeParent.rankDemote();
-//					   return (deleteBalance(nodeParent));
-//				   }
-//			   }
-//		   }
-//		   //deleting an unary node case 2
-//		   if ((nodeParent.getChildDiffs(1, 2))||(nodeParent.getChildDiffs(2, 1))){
-//			   if(nodeToDelete.getRight().isExternalLeaf()){
-//				   if(nodeToDelete == nodeParent.getRight()){
-//					   nodeParent.setRight(nodeToDelete.getLeft());
-//					   nodeToDelete.getLeft().setParent(nodeParent);
-//				   }
-//				   else{
-//					   nodeParent.setLeft(nodeToDelete.getLeft());
-//					   nodeToDelete.getLeft().setParent(nodeParent);
-//				   }
-//				   return 0;
-//			   } else{
-//				   if (nodeToDelete == nodeParent.getRight()){
-//					   nodeParent.setRight(nodeToDelete.getRight());
-//					   nodeToDelete.getRight().setParent(nodeParent);
-//				   } else {
-//					   nodeParent.setLeft(nodeToDelete.getRight());
-//					   nodeToDelete.getRight().setParent(nodeParent);
-//				   }
-//				   return 0;
-//			   }
-//		   }
-//		   //deleting a leaf (2,1) case 3
-//		   if ((nodeParent.getChildDiffs(1, 2))||(nodeParent.getChildDiffs(2, 1))||(nodeParent.getChildDiffs(2, 2))){
-//			   if (nodeToDelete.isInternalLeaf()){
-//				   if (nodeParent.getLeft()==nodeToDelete){
-//					   nodeParent.setLeft(new WAVLNode(nodeParent));
-//					   return deleteBalance(nodeParent.getLeft());
-//				   }
-//				   else{
-//					   nodeParent.setRight(new WAVLNode(nodeParent));
-//					   return deleteBalance(nodeParent.getRight());
-//				   }
-//			   } else { //deleting an unary node (2,1\2)
-//				   
-//			   }
-//		   }
-//		   
-//	   }
-//	return cntBalance;
-//	   
-//   }
 
    /**
     * public String min()
@@ -632,12 +686,12 @@ public class WAVLTree {
    * This is an example which can be deleted if no such classes are necessary.
    */
   public static class WAVLNode{
-		private WAVLNode left;
-		private WAVLNode right;
-		private WAVLNode parent;
-		private int key;
-		private String info;
-		private int rank;
+		private WAVLNode left; // The left child
+		private WAVLNode right; // The right child
+		private WAVLNode parent; // The father/parent
+		private int key; // The key of the node 
+		private String info; // the info of the node
+		private int rank; // The rank of the node
 		/**
 		 * Create a new node as an INTERNAL Leaf
 		 * @param key
@@ -714,6 +768,11 @@ public class WAVLTree {
 		public void setRank(int rank) {
 			this.rank = rank;
 		}
+		/**
+		 * return the rank different between the
+		 * current node and hs parent
+		 * @return
+		 */
 		public int getRankDiff(){
 			//case root
 			return (this.parent.rank-this.rank);
@@ -723,18 +782,47 @@ public class WAVLTree {
 				return true;
 			return false;
 		}
-		
+		/**
+		 * check if the node have at least one
+		 * external leaf as his child
+		 * @return
+		 */
 		public boolean isInternalNode(){
 			return(!this.right.isExternalLeaf() && !this.left.isExternalLeaf());
 		}
+		/**
+		 * 
+		 * @return
+		 */
 		public boolean isInternalLeaf(){
 			return(this.getRight().isExternalLeaf() && this.getLeft().isExternalLeaf());
 		}
-		public void rankPromote(){
-			this.rank = this.rank+1;
+		public boolean isRight(){
+			if(this.getParent()==null)
+				return false;
+			return (this == this.getParent().getRight());
 		}
+		/**
+		 * public boolean isLeft()
+		 *
+		 * @return true of the node is the left child of its parent
+		 */
+		public boolean isLeft(){
+			if(this.getParent()==null)
+				return false;
+			return (this == this.getParent().getLeft());
+		}
+		/**
+		 * 
+		 */
+		public void rankPromote(){
+			this.rank = this.rank + 1;
+		}
+		/**
+		 * 
+		 */
 		public void rankDemote(){
-			this.rank = this.rank-1;
+			this.rank = this.rank - 1;
 		}
 		/*
 		 * the function returns TRUE if there is a diff with value num 
@@ -745,11 +833,12 @@ public class WAVLTree {
 				return true;
 			return false;
 		}
-		public boolean getChildDiffs(int num1, int num2){
+		public boolean checkDiffs(int num1, int num2){
 			if(this.getLeft().getRankDiff()==num1 && this.getRight().getRankDiff()==num2)
 				return true;
 			return false;
 		}
+		
 		
   }
   
