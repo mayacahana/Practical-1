@@ -332,10 +332,88 @@ public class WAVLTree {
 				   node.rankDemote();
 				   return 2+deleteBalance(node.getParent());
 			   }
-			   //rotation left
+			   //rotation left case
+			   if (nodeRight.getRight().getRankDiff() == 1){
+				   rotateLeft(nodeRight);
+				   nodeRight.rankPromote();
+				   node.rankDemote();
+				   if (node.isInternalLeaf()){
+					   node.rankDemote();
+					   return 2;
+				   }
+				   else {
+					   return 1;
+				   }
+			   }
+			   
+			   //case double rotate - right & left rotation
+			   if (nodeRight.getRight().getRankDiff() ==2){
+				   WAVLNode nodeRightLeft = nodeRight.getLeft();
+				   
+				   //roations
+				   rotateRight(nodeRightLeft);
+				   rotateLeft(nodeRightLeft);
+				   // rank update
+				   nodeRightLeft.rankPromote();
+				   nodeRightLeft.rankPromote();
+				   nodeRight.rankDemote();
+				   node.rankPromote();
+				   node.rankDemote();
+				   
+				   return 2;
+			   }
 			   
 		   }
 		   
+	   } else {
+		   //the rank difference of the right side is 3
+		   
+		   //case demote
+		   if (node.getLeft().getRankDiff() == 2){
+			   node.rankDemote();
+			   return 1+deleteBalance(node.getParent());
+		   }
+		   
+		   if (node.getLeft().getRankDiff() == 1){
+			   WAVLNode nodeLeft = node.getLeft();
+			   
+			   //double demote
+			   if (nodeLeft.getLeft().getRankDiff() == 2 && nodeLeft.getRight().getRankDiff() == 2){
+				   nodeLeft.rankDemote();
+				   node.rankDemote();
+				   return 2+deleteBalance(node.getParent());
+			   }
+			   //right rotation
+			   if (nodeLeft.getLeft().getRankDiff() == 1 ){
+				   rotateRight(nodeLeft);
+				   nodeLeft.rankPromote();
+				   node.rankDemote();
+				   if (node.isInternalLeaf()){
+					   node.rankDemote();
+					   return 2;
+				   }
+				   else{
+					   return 1;
+				   }
+			   }
+			   // double rotate -right & left rotations
+			   if (nodeLeft.getLeft().getRankDiff() == 2){
+				  WAVLNode nodeLeftRight = nodeLeft.getRight();
+				  
+				  rotateLeft(nodeLeftRight);
+				  rotateRight(nodeLeftRight);
+				  
+				  //update ranks
+				  nodeLeftRight.rankPromote();
+				  nodeLeftRight.rankPromote();
+				  nodeLeft.rankDemote();
+				  node.rankDemote();
+				  node.rankDemote();
+				  
+				  return 2;
+			   }
+				   
+		   }
 	   }
    }
   /**
