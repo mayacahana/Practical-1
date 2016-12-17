@@ -67,7 +67,7 @@ public class WAVLTree {
    *
    */
   public boolean empty() { //check with Omri if I can use this
-	  return 0==size;
+	  return 0==this.getSize();
   }
 
  /**
@@ -432,8 +432,11 @@ public class WAVLTree {
 	   
 	   WAVLNode nodeToBalance = null;
 	   
+	   int key = nodeToDelete.getKey();
+	   
+	   
 	   //if the key does not exist
-	   if (nodeToDelete == null) //hceck this
+	   if (k != key) //hceck this
 		   return -1;
 	   //maintain the min max
 	   if (nodeToDelete == this.getMin()){
@@ -452,7 +455,7 @@ public class WAVLTree {
 			   this.setRoot(null);
 			   this.setMax(null);
 			   this.setMin(null);
-			   this.size = this.size - 1;
+			   //this.size = this.size - 1;
 		   } else if (nodeToDelete.isRight()){
 			   nodeParent.setRight(new WAVLNode(nodeParent));   
 		   } else if (nodeToDelete.isLeft()){
