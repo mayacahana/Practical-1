@@ -115,6 +115,24 @@ public class WAVLTree {
   		}
   		return node;
   	}
+  	public WAVLNode treePosition(int k){
+  		WAVLNode nodeToReturn = null;
+  		WAVLNode nodeOfTree = this.root;
+  		while(nodeOfTree!=null){
+  			nodeToReturn = nodeOfTree;
+  			int key = nodeOfTree.key;
+  			if(key==k){
+  				return nodeOfTree;
+  			}
+  			else if(key<nodeOfTree.key){
+  				nodeOfTree=nodeOfTree.left;
+  			}
+  			else{
+  				nodeOfTree=nodeOfTree.right;
+  			}  			
+  		}
+  		return nodeToReturn;
+  	}
   	
   	 /**
      * public WAVLNode findPlace(int k,String i, WAVLNode node)
@@ -469,8 +487,9 @@ public class WAVLTree {
 	   WAVLNode nodeRight = nodeToDelete.getRight();
 	   WAVLNode nodeLeft = nodeToDelete.getLeft();
 	   //if nodeToDelete is a root or the only key in the tree
+	   //check this
 	   if (nodeToDelete.getRight().isExternalLeaf() && nodeToDelete.left.isExternalLeaf()){
-		   if (nodeParent == null){
+		   if (nodeParent == null){ //if its he root
 			   this.setRoot(null);
 			   this.setMax(null);
 			   this.setMin(null);
@@ -506,11 +525,77 @@ public class WAVLTree {
 			   }
 		   }
 	   }
+	   //if the nodeToDelete is the root of the tree
+	   if (nodeToDelete == this.getRoot()){
+		   if (!nodeToDelete.getRight().isExternalLeaf() && !nodeToDelete.getLeft().isExternalLeaf()){
+			   //root with two children
+			   WAVLNode successor = this.findSuccessor(nodeToDelete);
+			   nodeToDelete.getRight().setParent(successor);
+			   nodeToDelete.getLeft().setParent(successor);
+			   
+		   }
+	   }
 	   
 	   
 	   this.size = this.size()-1;
 	   //balancing the tree: 
 	   return deleteBalance(nodeToBalance);
+   }
+   public int delete2(int k){
+	   WAVLNode node = this.getRoot();
+	   
+	   //search for the node to delete
+	   while(node.getKey()!= k && !root.isExternalLeaf()){
+		   node = node.getKey() > k ? node.getLeft() : node.getRight();
+	   }
+	   if (node == null){
+		   return -1;
+	   }
+	   WAVLNode nodeToDelete = null;
+	   //if the node we found has a NULL child, we will delete it
+	   // if not, we will delete its successor
+	   if (node.getLeft().isExternalLeaf()||node.getRight().isExternalLeaf()){
+		   nodeToDelete = node;
+	   } else {
+		   nodeToDelete = this.findSuccessor(node);
+	   }
+	   //
+	   WAVLNode nodeChild;
+	   if (nodeToDelete.getLeft().isExternalLeaf()){
+		   nodeChild = nodeToDelete.getRight();
+	   } else {
+		   nodeChild = nodeToDelete.getLeft();
+	   }
+	   nodeChild.setParent(nodeToDelete.getParent());
+	   if (nodeToDelete.isLeft()){
+		   nodeToDelete.getParent().setLeft(nodeToDelete);
+	   } else {
+		   nodeToDelete.getParent().setRight(nodeToDelete);
+	   }
+	   //in case we deleted the successor
+	   if(nodeToDelete != node){
+		   node.setKey(nodeToDelete.getKey());
+		   node.setInfo(nodeToDelete.getInfo());
+	   }
+	   //update the max min if necessery
+	   if (nodeToDelete == this.getMin()){
+		   if (this.getRoot()==null){
+			   this.setMin(null);
+		   } else{
+			   this.setMin(this.findSuccessor(nodeToDelete));
+		   }
+		   
+	   }
+	   if (nodeToDelete == this.getMax()){
+		   if (this.getRoot() == null){
+			   this.setMax(null);
+		   } else {
+			   this.setMax(this.findPredecessor(nodeToDelete));
+		   }
+	   }
+	   this.size = this.size -1;
+	   return (deleteBalance(nodeChild));
+	   
    }
    
 
@@ -770,6 +855,7 @@ public class WAVLTree {
 	   //what if the right is null?
 	   //the successor will be the lowest ancestor
 	   //of the node, which the node is in its left subtree
+	   
 	   if (node.getParent()==null) //no parents->no successor
 		   return null;
 	   //go up until the next turn right
