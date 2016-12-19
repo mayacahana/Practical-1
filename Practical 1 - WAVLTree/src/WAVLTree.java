@@ -309,6 +309,12 @@ public class WAVLTree {
 		  }	  
 
    }
+   /**
+    * deleteBalance - check if the tree is balanced 
+    * 
+    * @param node
+    * @return
+    */
    
    private int deleteBalance(WAVLNode node){
 	   if (node == null){
@@ -468,7 +474,7 @@ public class WAVLTree {
 			   this.setRoot(null);
 			   this.setMax(null);
 			   this.setMin(null);
-			   //this.size = this.size - 1;
+			   //check whether its the left or right son
 		   } else if (nodeToDelete.isRight()){
 			   nodeParent.setRight(new WAVLNode(nodeParent));   
 		   } else if (nodeToDelete.isLeft()){
@@ -477,7 +483,7 @@ public class WAVLTree {
 		   nodeToBalance = nodeParent;
 	   } else { 
 		   //check if there is only left child
-		   // if there is only child - bypass him
+		   // if there is only child - bypass it
 		   if (nodeRight.isExternalLeaf()){
 			   nodeToBalance = nodeToDelete.getParent();
 			   //replace the node with his left child
