@@ -618,8 +618,7 @@ public class WAVLTree {
 		  WAVLNode prevParent = node.getParent();
 		  if (prevParent == null){
 			  return;
-		  }
-		  
+		  } 
 		  WAVLNode prevRight = node.getRight();
 		  WAVLNode prevGrandparent = prevParent.getParent();
 		  //if the current father is the root
