@@ -335,6 +335,7 @@ public class WAVLTree {
     */
    
    private int deleteBalance(WAVLNode node){
+	   
 	   if (node == null){
 		   return 0;
 	   }
@@ -454,6 +455,103 @@ public class WAVLTree {
 		   }
 	   }
 	return 0;
+   }
+   private int deleteBalance2(WAVLNode node){
+	   int balanceCnt = 0;
+	   boolean isWAVL = false;
+	   //if we reach the root we can stop,
+	   //or when the problem is over
+	   while ((node!=this.getRoot()) && (node.getRankDiff() <= 2 || node.getRankDiff()==0) && isWAVL == false){
+		   boolean leftCase =node.isLeft();
+		   WAVLNode brother;
+		   if (leftCase == true){
+			   brother=node.getParent().getRight();
+		   } else {
+			   brother=node.getParent().getLeft();
+		   }
+		   //deleting a leaf
+		   if (node.isExternalLeaf()){
+			   //case (2,1) - end
+			   if (brother.getRankDiff()==1 && node.getRankDiff()==1){
+				   isWAVL = true;
+			   }
+			   // case (2,2) node - demote
+			   if (brother.getRankDiff()==2 && node.getRankDiff()==2){
+				   //demote
+				   node.getParent().rankDemote();
+				   balanceCnt++;
+				   //up
+				   node = node.getParent();
+				   if (leftCase){
+					   brother = node.getRight();
+				   } else {
+					   brother = node.getLeft();
+				   }
+			   }
+			   //case (3,2\1) 
+		   }
+		   //deleting an unary node
+		   if ((node.getRankDiff()==2) && (brother.getRankDiff()==2 || brother.getRankDiff()==1)){
+			   isWAVL=true;
+		   }
+		   //deletion rebalancing cases
+		   //case 1: demote
+		   if (node.getRankDiff()==3 && brother.getRankDiff()==2){
+			   //demote parent rank
+			   node.getParent().rankDemote();
+			   balanceCnt++;
+			   //up
+			   node = node.getParent();
+			   if (leftCase){
+				   brother = node.getRight();
+			   } else {
+				   brother = node.getLeft();
+			   }
+		   }
+		   //case 2,3,4
+		   if (node.getRankDiff()==3 && brother.getRankDiff() ==1){
+			   //case 2: double demote
+			   if (brother.checkDiffs(2, 2)){ //check
+				   node.getParent().rankDemote();
+				   brother.rankDemote();
+				   //up
+				   node = node.parent;
+				   if (leftCase){
+					   brother = node.getRight();
+				   } else {
+					   brother = node.getLeft();
+				   }
+			   }
+			   //case 3: rotate
+			   if ((brother.getLeft().getRankDiff()==1 || brother.getLeft().getRankDiff()==2) &&
+					   brother.getRight().getRankDiff()==1){
+				   //rotating according to the case
+				   if (leftCase){
+					   rotateRight(brother);
+					   brother = node.getParent().getRight();
+				   } else {
+					   rotateLeft(brother);
+					   brother = node.getParent().getLeft();
+				   }
+				   if (brother.checkDiffs(2, 2)){
+					   brother.rankDemote();
+				   }
+				   balanceCnt++;
+			   }
+			   //case 3 end
+			   //case 4: double rotation
+			   if (brother.getRight().getRankDiff()==2 && brother.getLeft().getRankDiff()==1){
+				   if (leftCase){
+					   rotateRight(brother);
+					   
+				   }
+			   }
+			   
+		   }
+		   
+		   
+		   
+	   }
    }
   /**
    * public int delete(int k)
@@ -751,9 +849,13 @@ public class WAVLTree {
 		  }
 		  
 	}
-   
+   /**
+    * Left rotation of a node as a right child of 
+    * his parent
+    * @param node as the child
+    */
    public void rotateLeft(WAVLNode node){
-		  //return if the there is no parent
+		//return if the there is no parent
 	   	WAVLNode prevParent = node.getParent();
 		  if (prevParent == null){
 			  return;
@@ -771,7 +873,7 @@ public class WAVLTree {
 				prevGrandparent.setLeft(node);
 			}
 		}
-		  //the operations as been explained in the lecture for rotation
+		//the operations as been explained in the lecture for rotation
 		node.parent = prevGrandparent;
 		node.left = prevParent;
 		prevParent.right = prevLeft;
