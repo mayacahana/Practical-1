@@ -537,14 +537,21 @@ public class WAVLTree {
 					   brother.rankDemote();
 				   }
 				   balanceCnt++;
+				   isWAVL = true;
 			   }
 			   //case 3 end
 			   //case 4: double rotation
 			   if (brother.getRight().getRankDiff()==2 && brother.getLeft().getRankDiff()==1){
 				   if (leftCase){
 					   rotateRight(brother);
+					   rotateLeft(brother);
 					   
+				   } else {
+					   rotateLeft(brother);
+					   rotateRight(brother);
 				   }
+				   balanceCnt += 2;
+				   isWAVL=true;
 			   }
 			   
 		   }
@@ -552,6 +559,7 @@ public class WAVLTree {
 		   
 		   
 	   }
+	return balanceCnt;
    }
   /**
    * public int delete(int k)
@@ -643,10 +651,10 @@ public class WAVLTree {
 	   WAVLNode node = this.getRoot();
 	   
 	   //search for the node to delete
-	   while(node.getKey()!= k && !root.isExternalLeaf()){
+	   while(node.getKey()!= k && !node.isExternalLeaf()){
 		   node = node.getKey() > k ? node.getLeft() : node.getRight();
 	   }
-	   if (node == null){
+	   if (node.isExternalLeaf()){
 		   return -1;
 	   }
 	   WAVLNode nodeToDelete = null;
@@ -666,9 +674,9 @@ public class WAVLTree {
 	   }
 	   nodeChild.setParent(nodeToDelete.getParent());
 	   if (nodeToDelete.isLeft()){
-		   nodeToDelete.getParent().setLeft(nodeToDelete);
+		   nodeToDelete.getParent().setLeft(nodeChild);
 	   } else {
-		   nodeToDelete.getParent().setRight(nodeToDelete);
+		   nodeToDelete.getParent().setRight(nodeChild);
 	   }
 	   //in case we deleted the successor
 	   if(nodeToDelete != node){
@@ -692,7 +700,7 @@ public class WAVLTree {
 		   }
 	   }
 	   this.size = this.size -1;
-	   return (deleteBalance(nodeChild));
+	   return (deleteBalance2(nodeChild));
 	   
    }
    
@@ -1015,7 +1023,7 @@ public class WAVLTree {
 			this.left = null;
 			this.right = null;
 			this.parent = parent;
-			this.key = 0;
+			this.key = Integer.MIN_VALUE;
 			this.info = null;
 			this.rank = -1;
 		}
