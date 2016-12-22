@@ -1,3 +1,5 @@
+import javafx.scene.Parent;
+
 /**
  *
  * WAVLTree
@@ -20,10 +22,10 @@ public class WAVLTree {
 		return root;
 	}
 	public WAVLNode getMin() {
-		return min;
+		return this.min;
 	}
 	public WAVLNode getMax() {
-		return max;
+		return this.max;
 	}
 	public void setMax(WAVLNode max) {
 		this.max=max;
@@ -334,230 +336,125 @@ public class WAVLTree {
     * @return
     */
    
-   private int deleteBalance(WAVLNode node){
-	   
-	   if (node == null){
-		   return 0;
-	   }
-	   //check if the node is a leaf 
-	   //if have a rank diff = 0 
-	   if (node.isInternalLeaf()){
-		   if (node.checkDiffs(2, 2)){
-			   node.rankDemote();
-			   //up the problem
-			   return 1+deleteBalance(node.getParent());
-		   }
-		   else if (node.checkDiffs(1, 1))
-			   return 0;
-	   }
-	   // the node is not a leaf. check the diffs
-	   if (node.getRight().getRankDiff()<=2 && node.getLeft().getRankDiff()<=2){
-		   //no further actions are needed
-		   return 0;
-	   }
-	   // if we get to here - the node is not a proper
-	   if (node.getLeft().getRankDiff() == 3){
-		   
-		   if (node.getRight().getRankDiff() == 2){ //demote 
-			   node.rankDemote();
-			   return 1 + deleteBalance(node.getParent());
-		   }
-		   if (node.getRight().getRankDiff() == 1){
-			   WAVLNode nodeRight = node.getRight();
-			   
-			   // (2,2) node
-			   if (nodeRight.getLeft().getRankDiff() == 2 && nodeRight.getRight().getRankDiff() == 1){
-				   nodeRight.rankDemote();
-				   node.rankDemote();
-				   return 2+deleteBalance(node.getParent());
-			   }
-			   //rotation left case
-			   if (nodeRight.getRight().getRankDiff() == 1){
-				   rotateLeft(nodeRight);
-				   nodeRight.rankPromote();
-				   node.rankDemote();
-				   if (node.isInternalLeaf()){
-					   node.rankDemote();
-					   return 2;
-				   }
-				   else {
-					   return 1;
-				   }
-			   }
-			   
-			   //case double rotate - right & left rotation
-			   if (nodeRight.getRight().getRankDiff() ==2){
-				   WAVLNode nodeRightLeft = nodeRight.getLeft();
-				   
-				   //Rotations
-				   rotateRight(nodeRightLeft);
-				   rotateLeft(nodeRightLeft);
-				   // rank update
-				   nodeRightLeft.rankPromote();
-				   nodeRightLeft.rankPromote();
-				   nodeRight.rankDemote();
-				   node.rankPromote();
-				   node.rankDemote();
-				   
-				   return 2;
-			   }
-			   
-		   }
-		   
-	   } else {
-		   //the rank difference of the right side is 3
-		   
-		   //case demote
-		   if (node.getLeft().getRankDiff() == 2){
-			   node.rankDemote();
-			   return 1+deleteBalance(node.getParent());
-		   }
-		   
-		   if (node.getLeft().getRankDiff() == 1){
-			   WAVLNode nodeLeft = node.getLeft();
-			   
-			   //double demote
-			   if (nodeLeft.getLeft().getRankDiff() == 2 && nodeLeft.getRight().getRankDiff() == 2){
-				   nodeLeft.rankDemote();
-				   node.rankDemote();
-				   return 2+deleteBalance(node.getParent());
-			   }
-			   //right rotation
-			   if (nodeLeft.getLeft().getRankDiff() == 1 ){
-				   rotateRight(nodeLeft);
-				   nodeLeft.rankPromote();
-				   node.rankDemote();
-				   if (node.isInternalLeaf()){
-					   node.rankDemote();
-					   return 2;
-				   }
-				   else{
-					   return 1;
-				   }
-			   }
-			   // double rotate -right & left rotations
-			   if (nodeLeft.getLeft().getRankDiff() == 2){
-				  WAVLNode nodeLeftRight = nodeLeft.getRight();
-				  
-				  rotateLeft(nodeLeftRight);
-				  rotateRight(nodeLeftRight);
-				  
-				  //update ranks
-				  nodeLeftRight.rankPromote();
-				  nodeLeftRight.rankPromote();
-				  nodeLeft.rankDemote();
-				  node.rankDemote();
-				  node.rankDemote();
-				  
-				  return 2;
-			   }
-				   
-		   }
-	   }
-	return 0;
-   }
+  
    private int deleteBalance2(WAVLNode node){
+	   
 	   int balanceCnt = 0;
 	   boolean isWAVL = false;
+	   WAVLNode brother;
+	   boolean leftCase =node.isLeft();
+	   WAVLNode nodeParent = node.getParent();
+	   if (nodeParent == null){
+		   return balanceCnt;
+	   }
+	   if (leftCase == true){
+		   brother=node.getParent().getRight();
+	   } else {
+		   brother=node.getParent().getLeft();
+	   }
+	   
+	 //terminal cases
+	   if (node.getRankDiff() == 2){
+		   if (node.isExternalLeaf()){
+			   if (brother.getRankDiff() == 1)
+				   isWAVL = true;
+		   } else {
+			   if (brother.getRankDiff() ==1 || brother.getRankDiff() ==2)
+				   isWAVL = true;;
+		   }
+	   }
+	   
 	   //if we reach the root we can stop,
 	   //or when the problem is over
-	   while ((node!=this.getRoot()) && (node.getRankDiff() <= 2 || node.getRankDiff()==0) && isWAVL == false){
-		   boolean leftCase =node.isLeft();
-		   WAVLNode brother;
+	   while ((node!=this.getRoot()) && isWAVL == false){
+		   leftCase =node.isLeft();
+		   nodeParent = node.getParent();
+		   // check if the node is the left child of his parent or not
 		   if (leftCase == true){
 			   brother=node.getParent().getRight();
 		   } else {
 			   brother=node.getParent().getLeft();
 		   }
-		   //deleting a leaf
-		   if (node.isExternalLeaf()){
-			   //case (2,1) - end
-			   if (brother.getRankDiff()==1 && node.getRankDiff()==1){
-				   isWAVL = true;
-			   }
-			   // case (2,2) node - demote
-			   if (brother.getRankDiff()==2 && node.getRankDiff()==2){
-				   //demote
-				   node.getParent().rankDemote();
-				   balanceCnt++;
-				   //up
-				   node = node.getParent();
-				   if (leftCase){
-					   brother = node.getRight();
-				   } else {
-					   brother = node.getLeft();
-				   }
-			   }
-			   //case (3,2\1) 
+		   // a flag to check whether the difference between the brother 
+		   // and the parent is 2 (or 1) on order to recogize the case
+		   int check2 = Math.abs(nodeParent.getRank() - brother.getRank());
+		   boolean caseTwo;
+		   if (check2 == 2){
+			   caseTwo = true;
+		   } else {
+			   caseTwo = false;
 		   }
-		   //deleting an unary node
-		   if ((node.getRankDiff()==2) && (brother.getRankDiff()==2 || brother.getRankDiff()==1)){
-			   isWAVL=true;
-		   }
-		   //deletion rebalancing cases
-		   //case 1: demote
-		   if (node.getRankDiff()==3 && brother.getRankDiff()==2){
-			   //demote parent rank
-			   node.getParent().rankDemote();
+		   if (caseTwo){
+			 //demote
+			   nodeParent.rankDemote();
 			   balanceCnt++;
 			   //up
 			   node = node.getParent();
-			   if (leftCase){
-				   brother = node.getRight();
-			   } else {
-				   brother = node.getLeft();
-			   }
-		   }
-		   //case 2,3,4
-		   if (node.getRankDiff()==3 && brother.getRankDiff() ==1){
-			   //case 2: double demote
-			   if (brother.checkDiffs(2, 2)){ //check
-				   node.getParent().rankDemote();
-				   brother.rankDemote();
-				   //up
-				   node = node.parent;
-				   if (leftCase){
-					   brother = node.getRight();
-				   } else {
-					   brother = node.getLeft();
-				   }
-			   }
-			   //case 3: rotate
-			   if ((brother.getLeft().getRankDiff()==1 || brother.getLeft().getRankDiff()==2) &&
-					   brother.getRight().getRankDiff()==1){
-				   //rotating according to the case
-				   if (leftCase){
-					   rotateRight(brother);
-					   brother = node.getParent().getRight();
-				   } else {
-					   rotateLeft(brother);
-					   brother = node.getParent().getLeft();
-				   }
-				   if (brother.checkDiffs(2, 2)){
-					   brother.rankDemote();
-				   }
-				   balanceCnt++;
+			   if (node == this.getRoot() || (Math.abs(node.getParent().getRank() - node.getRank()) <= 2)){
 				   isWAVL = true;
 			   }
-			   //case 3 end
-			   //case 4: double rotation
-			   if (brother.getRight().getRankDiff()==2 && brother.getLeft().getRankDiff()==1){
-				   if (leftCase){
-					   rotateRight(brother);
-					   rotateLeft(brother);
-					   
-				   } else {
-					   rotateLeft(brother);
-					   rotateRight(brother);
-				   }
+
+		   } else { //brother diff is 1
+			   // brother is (2,2) node
+			   // double demote
+			   if (brother.checkDiffs(2, 2)){
+				   node.getParent().rankDemote();
+				   brother.rankDemote();
 				   balanceCnt += 2;
-				   isWAVL=true;
-			   }
-			   
+				   
+				   //up
+				   node = node.parent;
+				   if (node == this.getRoot() || (Math.abs(node.getParent().getRank() - node.getRank()) <= 2)){
+					   isWAVL = true;
+				   }
+			   } else { //brother rank diff is 1 and brother is not (2,2)
+				   if (brother.getRight().getRankDiff()==2){
+					 //double rotation case
+					   if (leftCase){
+						   brother.getLeft().rankPromote();
+						   brother.getLeft().rankPromote();
+						   rotateRight(brother);
+						   rotateLeft(brother);
+						   
+					   } else {
+						   brother.getRight().rankPromote();
+						   brother.getRight().rankPromote();
+						   rotateLeft(brother);
+						   rotateRight(brother);
+					   }
+					   nodeParent.rankDemote();
+					   nodeParent.rankDemote();
+					   brother.rankDemote();
+					   balanceCnt += 2;
+					   //end
+					   isWAVL=true;
+				   } else {
+					   //rotate
+					   //rotating according to the case
+					   
+					   if (leftCase){
+						   brother.rankPromote();
+						   nodeParent.rankDemote();
+						   rotateLeft(brother);
+						   brother = node.getParent();
+					   } else {
+						   brother.rankPromote();
+						   nodeParent.rankDemote();
+						   rotateRight(brother);
+						   brother = node.getParent();
+					   }
+					   
+					   if (brother.checkDiffs(2, 2)){
+						   brother.rankDemote();
+						   System.out.println("brother key:" +brother.getRank());
+					   }
+					   balanceCnt++;
+					   //end
+					   isWAVL = true;
+				   }
+				   
+			   } 
 		   }
-		   
-		   
-		   
 	   }
 	return balanceCnt;
    }
@@ -569,85 +466,8 @@ public class WAVLTree {
    * returns the number of rebalancing operations, or 0 if no rebalancing operations were needed.
    * returns -1 if an item with key k was not found in the tree.
    */
-   public int delete(int k)
-   {
-	   WAVLNode nodeToDelete = searchForNode(k);
-	   
-	   WAVLNode nodeToBalance = null;
-	   
-	   int key = nodeToDelete.getKey();
-	   
-	   
-	   //if the key does not exist
-	   if (k != key) //Check this
-		   return -1;
-	   //maintain the min max
-	   if (nodeToDelete == this.getMin()){
-		   this.setMin(this.findSuccessor(nodeToDelete));
-	   }
-	   if (nodeToDelete == this.getMax()){
-		   this.setMax(this.findPredecessor(nodeToDelete));
-	   }
-	   
-	   WAVLNode nodeParent = nodeToDelete.getParent();
-	   WAVLNode nodeRight = nodeToDelete.getRight();
-	   WAVLNode nodeLeft = nodeToDelete.getLeft();
-	   //if nodeToDelete is a root or the only key in the tree
-	   //check this
-	   if (nodeToDelete.getRight().isExternalLeaf() && nodeToDelete.left.isExternalLeaf()){
-		   if (nodeParent == null){ //if its he root
-			   this.setRoot(null);
-			   this.setMax(null);
-			   this.setMin(null);
-			   //check whether its the left or right son
-		   } else if (nodeToDelete.isRight()){
-			   nodeParent.setRight(new WAVLNode(nodeParent));   
-		   } else if (nodeToDelete.isLeft()){
-			   nodeParent.setLeft(new WAVLNode(nodeParent));
-		   }
-		   nodeToBalance = nodeParent;
-	   } else { 
-		   //check if there is only left child
-		   // if there is only child - bypass it
-		   if (nodeRight.isExternalLeaf()){
-			   nodeToBalance = nodeToDelete.getParent();
-			   //replace the node with his left child
-			   byPassNode(nodeToDelete, nodeToDelete.getLeft());
-		   }
-		   // if the node have two children
-		   // or only right child
-		   else {
-			   if (nodeLeft.isExternalLeaf()){
-				   nodeToBalance = nodeToDelete.getParent();
-				   //replace the node with his right child
-				   byPassNode(nodeToDelete, nodeToDelete.getRight());
-			   } else {
-				   WAVLNode nodeSuccessor = this.findSuccessor(nodeToDelete);
-				   nodeToBalance = nodeSuccessor.getParent();
-				   if (nodeToBalance == nodeToDelete){
-					   nodeToBalance = nodeSuccessor;
-				   }
-				   byPassNode(nodeToDelete, nodeSuccessor);
-			   }
-		   }
-	   }
-	   //if the nodeToDelete is the root of the tree
-	   if (nodeToDelete == this.getRoot()){
-		   if (!nodeToDelete.getRight().isExternalLeaf() && !nodeToDelete.getLeft().isExternalLeaf()){
-			   //root with two children
-			   WAVLNode successor = this.findSuccessor(nodeToDelete);
-			   nodeToDelete.getRight().setParent(successor);
-			   nodeToDelete.getLeft().setParent(successor);
-			   
-		   }
-	   }
-	   
-	   
-	   this.size = this.size()-1;
-	   //balancing the tree: 
-	   return deleteBalance(nodeToBalance);
-   }
-   public int delete2(int k){
+   
+   public int delete(int k){
 	   WAVLNode node = this.getRoot();
 	   
 	   //search for the node to delete
@@ -664,39 +484,55 @@ public class WAVLTree {
 		   nodeToDelete = node;
 	   } else {
 		   nodeToDelete = this.findSuccessor(node);
+		   //in case we have a pointer to the successor
+		   
 	   }
-	   //
+	   
 	   WAVLNode nodeChild;
 	   if (nodeToDelete.getLeft().isExternalLeaf()){
 		   nodeChild = nodeToDelete.getRight();
 	   } else {
 		   nodeChild = nodeToDelete.getLeft();
 	   }
-	   nodeChild.setParent(nodeToDelete.getParent());
-	   if (nodeToDelete.isLeft()){
-		   nodeToDelete.getParent().setLeft(nodeChild);
+	   
+	   // in case nodeToDelete is the root
+	   if (nodeToDelete == this.getRoot()){
+		   if (nodeToDelete.getLeft().isExternalLeaf() && nodeToDelete.getRight().isExternalLeaf()){
+			   this.size = this.size - 1;
+			   return 0;
+		   } else {
+			   nodeChild.setParent(null);
+			   this.setRoot(nodeChild);
+		   }
+		   
 	   } else {
-		   nodeToDelete.getParent().setRight(nodeChild);
+		   nodeChild.setParent(nodeToDelete.getParent());
+		   if (nodeToDelete.isLeft()){
+			   nodeToDelete.getParent().setLeft(nodeChild);
+		   } else {
+			   nodeToDelete.getParent().setRight(nodeChild);
+		   }
 	   }
+	   
 	   //in case we deleted the successor
 	   if(nodeToDelete != node){
 		   node.setKey(nodeToDelete.getKey());
 		   node.setInfo(nodeToDelete.getInfo());
 	   }
-	   //update the max min if necessery
-	   if (nodeToDelete == this.getMin()){
+	   //update the max min if neccesery
+	   if (nodeToDelete.getKey() == this.getMin().getKey()){
 		   if (this.getRoot()==null){
 			   this.setMin(null);
 		   } else{
-			   this.setMin(this.findSuccessor(nodeToDelete));
+			   this.setMin(this.findMin(this.getRoot()));
 		   }
 		   
 	   }
-	   if (nodeToDelete == this.getMax()){
+	   if (nodeToDelete.getKey() == this.getMax().getKey()){
 		   if (this.getRoot() == null){
 			   this.setMax(null);
 		   } else {
-			   this.setMax(this.findPredecessor(nodeToDelete));
+			   this.setMax(this.findMax(this.getRoot()));
 		   }
 	   }
 	   this.size = this.size -1;
@@ -744,29 +580,28 @@ public class WAVLTree {
     * or an empty array if the tree is empty.
     */
     //implemented with recursion
-    public int[] keysToArray()
-    {
- 	     int[] keys_array = new int[this.getSize()]; 
-          rec_keysToArray(this.root,keys_array, 0);
-          
-          return keys_array;        
-          
+    public int[] keysToArray() {
+    	int[] keysArray = new int[this.getSize()]; 
+    	if (this.getSize()>0)
+    		recKeysToArray(this.root,keysArray, 0);
+    	    	
+    	return keysArray;          
     }
     
-    public int rec_keysToArray(WAVLNode node, int[] keys_array, int array_index){
+    public int recKeysToArray(WAVLNode node, int[] keysArray, int arrayIndex){
   		//recursion base case
  	   if (node == null || node.isExternalLeaf()) {
- 			return array_index;
+ 			return arrayIndex;
  		}
  	   //call the same function with the left subtree to add the key to the array in the expected order
- 	   array_index = rec_keysToArray(node.left, keys_array, array_index);
+ 	   arrayIndex = recKeysToArray(node.left, keysArray, arrayIndex);
  	   //add the key to the array
- 	   keys_array[array_index] = node.getKey();
- 	   array_index = array_index+1;
+ 	   keysArray[arrayIndex] = node.getKey();
+ 	   arrayIndex = arrayIndex+1;
  	   //call the same function with the right subtree to add the key to the array in the expected order
- 	   array_index = rec_keysToArray(node.right, keys_array, array_index);
+ 	   arrayIndex = recKeysToArray(node.right, keysArray, arrayIndex);
  	   
- 	return array_index;
+ 	return arrayIndex;
     }
     
 
@@ -778,32 +613,31 @@ public class WAVLTree {
     * or an empty array if the tree is empty.
     */
     //implemented with recursion
-   public String[] infoToArray()
-   {
- 	   
- 	  String[] info_array = new String[this.getSize()]; 
-       rec_infoToArray(this.root,info_array, 0);
+   public String[] infoToArray() {
+	   String[] infoArray = new String[this.getSize()]; 
+	   if (this.getSize() > 0)
+		   recInfoToArray(this.root,infoArray, 0);
           
-       return info_array;      
+       return infoArray;      
                           
    }
    
    
    
-   public int rec_infoToArray(WAVLNode node, String[] info_array, int array_index){
+   public int recInfoToArray(WAVLNode node, String[] infoArray, int arrayIndex){
  		//recursion base case
  	   if (node == null || node.isExternalLeaf()) {
- 			return array_index;
+ 			return arrayIndex;
  		}
  	   //call the same function with the left subtree to add the info to the array in the expected order
- 	   array_index = rec_infoToArray(node.left, info_array, array_index);
+ 	   arrayIndex = recInfoToArray(node.left, infoArray, arrayIndex);
  	   //add the info to the array
- 	   info_array[array_index] = node.getInfo();
- 	   array_index = array_index+1;
+ 	   infoArray[arrayIndex] = node.getInfo();
+ 	   arrayIndex = arrayIndex+1;
  	   //call the same function with the right subtree to add the info to the array in the expected order
- 	   array_index = rec_infoToArray(node.right, info_array, array_index);
+ 	   arrayIndex = recInfoToArray(node.right, infoArray, arrayIndex);
  	   
- 	return array_index;
+ 	return arrayIndex;
    }
 
    /**
@@ -822,7 +656,17 @@ public class WAVLTree {
    }
    /**
     * public void rotateRight
-    * 
+    * /**
+     * 
+     * Rotates "node" right:
+     *
+     *            a    node--> O
+     *          /  \   ==>   /  \
+     * node--> O    b       x    a
+     *       /  \               / \
+     *     x     y            y    b
+     *
+     * 
     * Rotate right from the given node (this node will go up)
     * @param node
     */
@@ -857,9 +701,21 @@ public class WAVLTree {
 		  }
 		  
 	}
+ 
+   
+  
+   
    /**
     * Left rotation of a node as a right child of 
     * his parent
+    * * Rotates "node" left:
+     *
+     *       a            node--> O
+     *     /  \                 /  \
+     *    b    O <--node  ==>  a    x
+     *        / \            /  \
+     *       y    x         b    y
+     *
     * @param node as the child
     */
    public void rotateLeft(WAVLNode node){
@@ -909,6 +765,15 @@ public class WAVLTree {
 		   leftNode.rankPromote();
 	   }
    }
+   
+   
+   private WAVLNode findMax(WAVLNode node){
+	   WAVLNode temp = node;
+	   while (!temp.getRight().isExternalLeaf()){
+		   temp = temp.getRight();
+	   }
+	   return temp;
+   }
    /*
     * returns the node which is the predecessor of the input "node"
     * The predecessor - the node with the maximum key that is less than the key of the node;
@@ -916,31 +781,24 @@ public class WAVLTree {
     * been deleted
     */
    private WAVLNode findPredecessor(WAVLNode node){
-	   if(node == null){
-		   return null;
-	   }
-	   WAVLNode temp = node;
-	   if (node.getLeft()!=null){
-		   temp = temp.getLeft();
-		   while(temp.getRight()!=null){
-			   temp = temp.getRight();
-		   }
-		   return temp;
-	   }
-	   //if the left is null
-	   if (node.getParent()==null)
-		   return null;
-	   //go up until the next left right
-	   if (node == node.getParent().getLeft()){
-		   return node.getParent();
-	   }
-	   while (temp == temp.getParent().getLeft()){
-		   temp = temp.getParent();
-	   }
-	   if (temp.getParent() != null)
-		   return temp.getParent();
-	   return null;
+	   if (node.getLeft() != null)
+		   return findMax(node.getLeft());
 	   
+	   WAVLNode parent = node.getParent();
+	   while (parent != null && node.isLeft()){
+		   node = parent;
+		   parent = parent.getParent();
+	   }
+	   return parent;
+	   
+   }
+   
+   private WAVLNode findMin(WAVLNode node){
+	   WAVLNode temp = node;
+	   while (!temp.getLeft().isExternalLeaf()){
+		   temp = temp.getLeft();
+	   }
+	   return temp;
    }
    /*
     * returns the node which is the successor of the input "node"
@@ -951,34 +809,15 @@ public class WAVLTree {
     * deleted.
     */
    private WAVLNode findSuccessor(WAVLNode node){
-	   if(node == null){
-		   return null;
-	   }
-	   WAVLNode temp = node;
-	   if(node.getRight()!= null){
-		   temp = node.getRight();
-		   while (temp.getLeft()!=null){
-			   temp = temp.getLeft();
-		   }
-		   return temp;
-	   }
-	   //what if the right is null?
-	   //the successor will be the lowest ancestor
-	   //of the node, which the node is in its left subtree
-	   
-	   if (node.getParent()==null) //no parents->no successor
-		   return null;
-	   //go up until the next turn right
-	   if (node == node.getParent().getLeft()){
-		   return node.getParent();
-	   }
-	   while (temp == temp.getParent().getRight()){
-		   temp = temp.getParent();
-	   }
-	   if (temp.getParent() != null)
-		   return temp.getParent();
-	   
-	   return null;
+	  if (node.getRight() != null)
+		  return findMin(node.getRight());
+	  
+	  WAVLNode parent = node.getParent();
+	  while (parent != null && node.isRight()){
+		  node = parent;
+		  parent = parent.getParent();
+	  }
+	  return parent;
 	   
    }
    
