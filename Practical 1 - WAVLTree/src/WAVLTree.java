@@ -410,6 +410,9 @@ public class WAVLTree {
    */
    
    public int delete(int k){
+	   if (this.empty()){
+		   return -1;
+	   }
 	   WAVLNode node = this.getRoot();
 	   
 	   //search for the node to delete
@@ -443,6 +446,9 @@ public class WAVLTree {
 	   if (nodeToDelete == this.getRoot()){
 		   if (nodeToDelete.getLeft().isExternalLeaf() && nodeToDelete.getRight().isExternalLeaf()){
 			   this.size = this.size - 1;
+			   this.setRoot(null);
+			   this.setMax(null);
+			   this.setMin(null);
 			   return 0;
 		   } else {
 			   nodeChild.setParent(null);
