@@ -464,7 +464,7 @@ public class WAVLTree {
 		   }
 	   }
 	   
-	   //in case we deleted the successor
+	   //in case we deleted the successo
 	   if(nodeToDelete != node){
 		   node.setKey(nodeToDelete.getKey());
 		   node.setInfo(nodeToDelete.getInfo());
