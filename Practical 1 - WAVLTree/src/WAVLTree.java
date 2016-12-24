@@ -289,7 +289,7 @@ public class WAVLTree {
 		   brother=node.getParent().getLeft();
 	   }
 	   
-	 //terminal cases
+	 //terminal_cases
 	   if (node.getRankDiff() == 2){
 		   if (node.isExternalLeaf()){
 			   if (brother.getRankDiff() == 1)
