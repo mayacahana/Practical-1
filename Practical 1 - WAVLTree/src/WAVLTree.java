@@ -280,8 +280,7 @@ public class WAVLTree {
 	   boolean isWAVL = false;
 	   WAVLNode brother;
 	   boolean leftCase =node.isLeft();
-	   WAVLNode nodeParent = node.getParent();
-	   if (nodeParent == null){
+	   if (node.getParent() == null){
 		   return balanceCnt;
 	   }
 	   if (leftCase == true){
@@ -297,15 +296,15 @@ public class WAVLTree {
 				   isWAVL = true;
 		   } else {
 			   if (brother.getRankDiff() ==1 || brother.getRankDiff() ==2)
-				   isWAVL = true;;
+				   isWAVL = true;
 		   }
 	   }
 	   
 	   //if we reach the root we can stop,
 	   //or when the problem is over
 	   while ((node!=this.getRoot()) && isWAVL == false){
-		   leftCase =node.isLeft();
-		   nodeParent = node.getParent();
+		   leftCase = node.isLeft();
+		   WAVLNode nodeParent = node.getParent();
 		   WAVLNode brotherChild1 =null, brotherChild2 = null;
 		   // check if the node is the left child of his parent or not
 		   if (leftCase == true){
@@ -332,7 +331,7 @@ public class WAVLTree {
 			   balanceCnt++;
 			   //up
 			   node = node.getParent();
-			   if (node == this.getRoot() || (Math.abs(node.getParent().getRank() - node.getRank()) <= 2)){
+			   if (node == this.getRoot() || (Math.abs(node.getParent().getRank() - node.getRank()) == 2)){
 				   isWAVL = true;
 			   }
 
@@ -346,7 +345,7 @@ public class WAVLTree {
 				   
 				   //up
 				   node = node.parent;
-				   if (node == this.getRoot() || (Math.abs(node.getParent().getRank() - node.getRank()) <= 2)){
+				   if (node == this.getRoot() || (Math.abs(node.getParent().getRank() - node.getRank()) == 2)){
 					   isWAVL = true;
 				   }
 			   } else { //brother rank diff is 1 and brother is not (2,2)
@@ -354,16 +353,18 @@ public class WAVLTree {
 				   if (brotherChild1.getRankDiff()==2){
 					 //double rotation case
 					   if (leftCase){
-						   brother.getLeft().rankPromote();
-						   brother.getLeft().rankPromote();
-						   rotateRight(brother);
-						   rotateLeft(brother);
+						   WAVLNode brotherLeft = brother.getLeft();
+						   brotherLeft.rankPromote();
+						   brotherLeft.rankPromote();
+						   rightRotate2(brotherLeft);
+						   leftRotate2(brotherLeft);
 						   
 					   } else {
-						   brother.getRight().rankPromote();
-						   brother.getRight().rankPromote();
-						   rotateLeft(brother);
-						   rotateRight(brother);
+						   WAVLNode brotherRight = brother.getRight();
+						   brotherRight.rankPromote();
+						   brotherRight.rankPromote();
+						   leftRotate2(brotherRight);
+						   rightRotate2(brotherRight);
 					   }
 					   nodeParent.rankDemote();
 					   nodeParent.rankDemote();
@@ -378,17 +379,17 @@ public class WAVLTree {
 					   if (leftCase){
 						   brother.rankPromote();
 						   nodeParent.rankDemote();
-						   rotateLeft(brother);
+						   leftRotate2(brother);
 						   brother = node.getParent();
 					   } else {
 						   brother.rankPromote();
 						   nodeParent.rankDemote();
-						   rotateRight(brother);
+						   rightRotate2(brother);
 						   brother = node.getParent();
 					   }
 					   
-					   if (brother.checkDiffs(2, 2)){
-						   brother.rankDemote();
+					   if (nodeParent.checkDiffs(2, 2)){
+						   nodeParent.rankDemote();
 					   }
 					   balanceCnt++;
 					   //end
@@ -431,10 +432,14 @@ public class WAVLTree {
 	   } else {
 		   successor = this.findSuccessor(node);
 		   nodeToDelete = successor;
+		 
 	   }
 	   //in case we have a pointer to the successor
 	   boolean deletedMin = (this.min == nodeToDelete);
 	   boolean deletedMax = (this.max == nodeToDelete);
+	   if (successor == this.max)
+		   deletedMax=true;
+	   
 	   WAVLNode nodeChild;
 	   if (nodeToDelete.getLeft().isExternalLeaf()){
 		   nodeChild = nodeToDelete.getRight();
@@ -453,6 +458,7 @@ public class WAVLTree {
 		   } else {
 			   nodeChild.setParent(null);
 			   this.setRoot(nodeChild);
+			   
 		   }
 		   
 	   } else {
@@ -468,7 +474,7 @@ public class WAVLTree {
 	   if(nodeToDelete != node){
 		   node.setKey(nodeToDelete.getKey());
 		   node.setInfo(nodeToDelete.getInfo());
-		   deletedMax = true;
+		   //deletedMax = true;
 	   }
 	   //update the max min if neccesery
 	   if (deletedMin){
@@ -698,6 +704,49 @@ public class WAVLTree {
 			prevLeft.parent = prevParent;
 		}
 	}
+   private void leftRotate2 (WAVLNode rotationNode){
+	   WAVLNode node = rotationNode.getParent();
+	   
+	   // changing the ponters
+	   // the node & rotation node
+	   if (node.isLeft()){
+		   setLeftChild(node.getParent(), rotationNode);
+	   } else {
+		   setRightChild(node.getParent(), rotationNode);
+	   }
+	   setRightChild(node, rotationNode.getLeft());
+	   setLeftChild(rotationNode,node);
+	   
+   }
+   
+   private void rightRotate2 (WAVLNode rotationNode){
+	   WAVLNode node = rotationNode.getParent();
+	   
+	   if (node.isLeft()){
+		   setLeftChild(node.getParent(), rotationNode);
+	   } else {
+		   setRightChild(node.getParent(), rotationNode);
+	   }
+	   setLeftChild(node, rotationNode.getRight());
+	   setRightChild(rotationNode, node);
+   }
+   private void setLeftChild(WAVLNode parent, WAVLNode child){
+	   parent.setLeft(child);
+	   child.setParent(parent);
+   }
+   private void setRightChild(WAVLNode parent, WAVLNode child){
+	   parent.setRight(child);
+	   child.setParent(parent);
+   }
+   
+   private void doubleRotateRight(WAVLNode node){
+	   leftRotate2(node);
+	   rightRotate2(node);
+   }
+   private void doubleRotateLeft(WAVLNode node){
+	   rightRotate2(node);
+	   leftRotate2(node);
+   }
    //double rotations as been explained in the lecture using the right and left single rotations
    public void doubleRotate(WAVLNode node){
 	   if(node.getParent().getLeft()==node){
