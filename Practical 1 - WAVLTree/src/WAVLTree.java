@@ -1,5 +1,3 @@
-import javafx.scene.Parent;
-
 /**
  *
  * WAVLTree
@@ -96,46 +94,7 @@ public class WAVLTree {
   		
   		return rec_search(this.root, k);
   		}
-  	
-  	public WAVLNode searchForNode(int k){
-  		if (this.getRoot() == null)
-  			return null;
-  		WAVLNode node = this.getRoot();
-  		while (null!=node){
-  			int nodeKey = node.getKey();
-  			if (k==nodeKey){
-  				return node;
-  			} else if(k < nodeKey){
-  				if(node.getLeft()==null || node.getLeft().isExternalLeaf())
-  					return node;
-  				node = node.getLeft();
-  			} else {
-  				if (node.getRight()==null || node.getRight().isExternalLeaf())
-  					return node;
-  				node = node.getRight();
-  			}
-  		}
-  		return node;
-  	}
-  	public WAVLNode treePosition(int k){
-  		WAVLNode nodeToReturn = null;
-  		WAVLNode nodeOfTree = this.root;
-  		while(nodeOfTree!=null){
-  			nodeToReturn = nodeOfTree;
-  			int key = nodeOfTree.key;
-  			if(key==k){
-  				return nodeOfTree;
-  			}
-  			else if(key<nodeOfTree.key){
-  				nodeOfTree=nodeOfTree.left;
-  			}
-  			else{
-  				nodeOfTree=nodeOfTree.right;
-  			}  			
-  		}
-  		return nodeToReturn;
-  	}
-  	
+  	  	
   	 /**
      * public WAVLNode findPlace(int k,String i, WAVLNode node)
      *
@@ -274,7 +233,7 @@ public class WAVLTree {
     */
    
   
-   private int deleteBalance2(WAVLNode node){
+   private int deleteBalance(WAVLNode node){
 	   
 	   int balanceCnt = 0;
 	   boolean isWAVL = false;
@@ -289,7 +248,7 @@ public class WAVLTree {
 		   brother=node.getParent().getLeft();
 	   }
 	   
-	 //terminal_cases
+	 //terminal cases
 	   if (node.getRankDiff() == 2){
 		   if (node.isExternalLeaf()){
 			   if (brother.getRankDiff() == 1)
@@ -470,13 +429,13 @@ public class WAVLTree {
 		   }
 	   }
 	   
-	   //in case we deleted the successo
+	   //in case we deleted the successor
 	   if(nodeToDelete != node){
 		   node.setKey(nodeToDelete.getKey());
 		   node.setInfo(nodeToDelete.getInfo());
 		   //deletedMax = true;
 	   }
-	   //update the max min if neccesery
+	   //update the max & min if necessary
 	   if (deletedMin){
 		   if (this.getRoot()==null){
 			   this.setMin(null);
@@ -493,7 +452,7 @@ public class WAVLTree {
 		   }
 	   }
 	   this.size = this.size -1;
-	   return (deleteBalance2(nodeChild));
+	   return (deleteBalance(nodeChild));
 	   
    }
    
@@ -611,22 +570,7 @@ public class WAVLTree {
    {
 	   return this.getSize(); 
    }
-   /**
-    * public void rotateRight
-    * /**
-     * 
-     * Rotates "node" right:
-     *
-     *            a    node--> O
-     *          /  \   ==>   /  \
-     * node--> O    b       x    a
-     *       /  \               / \
-     *     x     y            y    b
-     *
-     * 
-    * Rotate right from the given node (this node will go up)
-    * @param node
-    */
+
    public void rotateRight(WAVLNode node){
 		
 		  WAVLNode prevParent = node.getParent();
@@ -659,22 +603,6 @@ public class WAVLTree {
 		  
 	}
  
-   
-  
-   
-   /**
-    * Left rotation of a node as a right child of 
-    * his parent
-    * * Rotates "node" left:
-     *
-     *       a            node--> O
-     *     /  \                 /  \
-     *    b    O <--node  ==>  a    x
-     *        / \            /  \
-     *       y    x         b    y
-     *
-    * @param node as the child
-    */
    public void rotateLeft(WAVLNode node){
 		//return if the there is no parent
 	   	WAVLNode prevParent = node.getParent();
