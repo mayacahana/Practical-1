@@ -356,15 +356,15 @@ public class WAVLTree {
 						   WAVLNode brotherLeft = brother.getLeft();
 						   brotherLeft.rankPromote();
 						   brotherLeft.rankPromote();
-						   rightRotate2(brotherLeft);
-						   leftRotate2(brotherLeft);
+						   rotateRight(brotherLeft);
+						   rotateLeft(brotherLeft);
 						   
 					   } else {
 						   WAVLNode brotherRight = brother.getRight();
 						   brotherRight.rankPromote();
 						   brotherRight.rankPromote();
-						   leftRotate2(brotherRight);
-						   rightRotate2(brotherRight);
+						   rotateLeft(brotherRight);
+						   rotateRight(brotherRight);
 					   }
 					   nodeParent.rankDemote();
 					   nodeParent.rankDemote();
@@ -379,13 +379,13 @@ public class WAVLTree {
 					   if (leftCase){
 						   brother.rankPromote();
 						   nodeParent.rankDemote();
-						   leftRotate2(brother);
-						   brother = node.getParent();
+						   rotateLeft(brother);
+						   
 					   } else {
 						   brother.rankPromote();
 						   nodeParent.rankDemote();
-						   rightRotate2(brother);
-						   brother = node.getParent();
+						   rotateRight(brother);
+						   
 					   }
 					   
 					   if (nodeParent.checkDiffs(2, 2)){
@@ -707,7 +707,7 @@ public class WAVLTree {
    private void leftRotate2 (WAVLNode rotationNode){
 	   WAVLNode node = rotationNode.getParent();
 	   
-	   // changing the ponters
+	   // changing the pointers
 	   // the node & rotation node
 	   if (node.isLeft()){
 		   setLeftChild(node.getParent(), rotationNode);
